@@ -1,3 +1,5 @@
+-- 动画的实例
+
 local size = cc.Director:getInstance():getWinSize()
 local isPlaying = false
 

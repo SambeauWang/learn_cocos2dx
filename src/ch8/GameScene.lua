@@ -1,3 +1,5 @@
+-- 动画、动作和特效相关
+
 PLAY_TAG = 102
 FLIPX_TAG = 103
 FLIPY_TAG = 104
@@ -31,6 +33,7 @@ function GameScene:createLayer()
     bg:setPosition(cc.p(size.width/2,size.height/2))
     layer:addChild(bg)
 
+    -- 处理 菜单 的回调函数
     local function OnClickCallback( tag, mnItemSender )
         cclog("tag = %d", tag)
         actionFLag = mnItemSender:getTag()
@@ -41,11 +44,13 @@ function GameScene:createLayer()
         cc.Director:getInstance():pushScene(ts)
     end
 
+    -- 动作相关
     local placeLabel = cc.Label:createWithBMFont("ch8/fonts/fnt2.fnt", "Place")
     local placeMenu = cc.MenuItemLabel:create(placeLabel)
     placeMenu:setTag(PLAY_TAG)
     placeMenu:registerScriptTapHandler(OnClickCallback)
 
+    -- 特效相关
     local flipXLabel = cc.Label:createWithBMFont("ch8/fonts/fnt2.fnt", "FlipX")
     local flipXMenu = cc.MenuItemLabel:create(flipXLabel)
     flipXMenu:setTag(FLIPX_TAG)
@@ -61,11 +66,13 @@ function GameScene:createLayer()
     hideMenu:setTag(HIDE_SHOW_TAG)
     hideMenu:registerScriptTapHandler(OnClickCallback)
 
+    -- 动作序列
     local sequenceLabel = cc.Label:createWithBMFont("ch8/fonts/fnt2.fnt", "Sequence")
     local sequenceMenu = cc.MenuItemLabel:create(sequenceLabel)
     sequenceMenu:setTag(kSequence)
     sequenceMenu:registerScriptTapHandler(OnClickCallback)
 
+    -- 动作中的回调函数
     local callbackLabel = cc.Label:createWithBMFont("ch8/fonts/fnt2.fnt", "CallbackND")
     local callbackMenu = cc.MenuItemLabel:create(callbackLabel)
     callbackMenu:setTag(CallBack_TAG)

@@ -1,3 +1,5 @@
+-- 动作和特效的实现
+
 local hiddenFlag = true
 local sprite
 local gridNodeTarget
