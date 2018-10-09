@@ -41,7 +41,11 @@ function main()
     -- local scene = require("GameScene")
     -- local scene = require("StartScene")
     -- local scene = require("ch8/GameScene")
-    local scene = require("ch8/AnimateScene")
+    -- local scene = require("ch8/AnimateScene")
+    -- local scene = require("ch9event/GameScene")
+    -- local scene = require("ch13physics/GameScene")
+    -- local scene = require("ch14ui/GameScene")
+    local scene = require("ch15/GameScene")
     local gameScene = scene.create()
 
     if cc.Director:getInstance():getRunningScene() then
