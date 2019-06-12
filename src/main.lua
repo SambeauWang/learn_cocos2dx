@@ -16,6 +16,11 @@
 -- end
 require("cocos.init")
 
+local json = require 'dkjson'
+local debuggee = require 'vscode-debuggee'
+local startResult, breakerType = debuggee.start(json)
+print('debuggee start ->', startResult, breakerType)
+
 function cclog( ... )
     print(string.format(...))
 end
@@ -27,26 +32,30 @@ function main()
     collectgarbage("setstepmul", 5000)
 
     cc.FileUtils:getInstance():addSearchPath("src")
-    cc.FileUtils:getInstance():addSearchPath("res") 
+    cc.FileUtils:getInstance():addSearchPath("res")
 
     -- 初始化显示的帧率等参数
     local director = cc.Director:getInstance()
-    -- director:getOpenGLView():setDesignResolutionSize(640, 960, 0)
-    director:getOpenGLView():setDesignResolutionSize(1136, 640, 0)
+    director:getOpenGLView():setDesignResolutionSize(2048, 1080, 0)
 
     director:setDisplayStats(true)
     director:setAnimationInterval(1.0/60.0)
+
+    -- local test = my.MyClass:create()
+    -- print("lua bind: " .. test:foo(99))
 
     -- 创建场景
     -- local scene = require("GameScene")
     -- local scene = require("StartScene")
     -- local scene = require("ch8/GameScene")
-    -- local scene = require("ch8/AnimateScene")
+    local scene = require("ch8/AnimateScene")
     -- local scene = require("ch9event/GameScene")
     -- local scene = require("ch13physics/GameScene")
     -- local scene = require("ch14ui/GameScene")
-    local scene = require("ch15/GameScene")
+    -- local scene = require("ch15/GameScene")
+    -- local scene = require("scrollview/GameScene")
     local gameScene = scene.create()
+    _G.gameScene = gameScene
 
     if cc.Director:getInstance():getRunningScene() then
         cc.Director:getInstance():replaceScene(gameScene)

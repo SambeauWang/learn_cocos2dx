@@ -45,6 +45,21 @@ function AnimateScene:createLayer()
     layer:addChild(mn)
 
     local function OnAction(menuItemSender)
+        local scale = 0.5
+        local sz = cc.Director:getInstance():getWinSize()
+        local renderTexture = cc.RenderTexture:create(sz.width * scale, sz.height * scale)
+        local scene = _G.gameScene
+        local ancPos = scene:getAnchorPoint()
+
+        -- copy screen
+        -- renderTexture:begin()
+        -- scene:setScale(scale)
+        -- scene:setAnchorPoint(0, 0)
+        -- scene:visit()
+        -- renderTexture:endToLua()
+        -- print("test2", renderTexture:saveToFile("D:\\test.png"))
+        -- scene:setScale(1)
+        -- scene:setAnchorPoint(ancPos)
 
         if not isPlaying then
 
@@ -53,7 +68,7 @@ function AnimateScene:createLayer()
             for i=1,4 do
                 local frameName = string.format("h%d.png",i)
                 cclog("frameName = %s",frameName)
-                local spriteFrame = spriteFrame:getSpriteFrameByName(frameName)
+                local spriteFrame = spriteFrame:getSpriteFrame(frameName)
                 animation:addSpriteFrame(spriteFrame)
             end
 

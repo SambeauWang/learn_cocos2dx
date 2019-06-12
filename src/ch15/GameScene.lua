@@ -17,7 +17,7 @@ end
 
 function GameScene:createLayer()
     local layer = cc.Layer:create()
-    
+
     local bg = cc.LayerColor:create()
     layer:addChild(bg)
 
@@ -63,7 +63,7 @@ function GameScene:createLayer()
 	rootps:setCameraMask(cc.CameraFlag.USER1)
 	rootps:setScale(5)
 	rootps:startParticleSystem()
-	sprite:addChild(rootps)
+    sprite:addChild(rootps)
 
     return layer
 end

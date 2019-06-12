@@ -23,19 +23,119 @@ THE SOFTWARE.
 ]]
 
 -- debug setting
-local breakInfoFun, xpCallFun = require("LuaDebugjit")("localhost", 7003)
-cc.Director:getInstance():getScheduler():scheduleScriptFunc(breakInfoFun, 0.3, false)
-
+-- local breakInfoFun, xpCallFun = require("LuaDebugjit")("localhost", 7003)
+-- cc.Director:getInstance():getScheduler():scheduleScriptFunc(breakInfoFun, 0.3, false)
 
 require "cocos.cocos2d.Cocos2d"
 require "cocos.cocos2d.Cocos2dConstants"
 require "cocos.cocos2d.functions"
 
+local _RUNTIME_ERROR = print
+
+local function getlocals( frame )
+    local i = 1
+    frame = traceback.gettop() + 1 + frame
+    local info = debug.getinfo(frame)
+    if info == nil then return end
+
+    local total = 1
+    local var_names  = {}
+    local var_values = {}
+
+    if info.func then
+        i = 1
+        while true do
+            local name, value = debug.getupvalue(info.func,i)
+            if not name then break end
+
+            var_names[total] = name
+            var_values[total] = value  --不要用table.insert, value可能为nil
+
+            total = total + 1
+            i = i + 1
+        end
+    end
+
+    i = 1
+    while true do
+        local name, value = debug.getlocal( frame, i)
+        if not name then break end
+
+        var_names[total] = name
+        var_values[total] = value
+
+        total = total + 1
+        i = i + 1
+    end
+
+    return var_names, var_values
+end
+
+function get_backtrace( botframe, PrintVar )
+	local btinfo = {}
+	table.insert(btinfo, 'traceback:')
+	local top = traceback.gettop()
+	local indicator = ' '
+
+	for frame = botframe, -1  do
+		local level = ( top + 1 ) + frame
+		local info = debug.getinfo(level,'nfSlu')
+		if info == nil then
+			break
+		end
+
+		local i = frame - botframe
+		if info.what == 'C' then   -- is a C function?
+			if info.name ~= nil then
+				table.insert(btinfo, string.format('\t%s%2d[C] : in %s',indicator, i, info.name))
+			else
+				table.insert(btinfo, string.format('\t%s%2d[C] :',indicator, i))
+			end
+		else   -- a Lua function
+			if info.name ~= nil then
+				table.insert(btinfo , string.format('\t%s%2d %s:%d in %s',indicator, i, info.source, info.currentline, info.name))
+			else
+				table.insert(btinfo, string.format('\t%s%2d %s:%d',indicator, i, info.source, info.currentline))
+			end
+
+			if PrintVar then
+				local var_names, var_values = getlocals( frame )
+				for pos, name in ipairs(var_names) do
+					local val = string.sub(tostring(var_values[pos]), 1, 50)
+					local Msg = string.format("\t\t%s:%s", name, val)
+					table.insert(btinfo, Msg)
+				end
+			end
+		end
+	end
+	return table.concat(btinfo, "\n")
+end
+
+function SafeXy3Except(Error)
+	_RUNTIME_ERROR("ERROR!!", Error )
+	local btinfo = nil
+	local function Xy3Except()
+		local curframe = -traceback.gettop() -- the curframe as at the top frame as 0
+        if curframe < -100 then
+	        return "stack too deep!!\n" .. debug.traceback()
+        end
+		local botframe = curframe + 4 -- as 'SafeXy3Except' is 4 frame under the last fuction
+		btinfo = get_backtrace(botframe, true)
+		print(btinfo)
+	end
+	xpcall(Xy3Except, function(Error) _RUNTIME_ERROR("internal excepthook error", Error) end)
+
+	return Error, btinfo
+end
+
 __G__TRACKBACK__ = function(msg)
-    xpCallFun()
-    local msg = debug.traceback(msg, 3)
+    -- xpCallFun()
+    local msg = debug.traceback(msg)
     print(msg)
     return msg
+    -- local errInfo, btInfo = SafeXy3Except(msg)
+    -- ERROR(tostring(msg))
+    -- return debug.traceback(msg)
 end
 
 -- opengl
