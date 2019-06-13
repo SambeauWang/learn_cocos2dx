@@ -16,10 +16,11 @@
 -- end
 require("cocos.init")
 
-local json = require 'dkjson'
-local debuggee = require 'vscode-debuggee'
-local startResult, breakerType = debuggee.start(json)
-print('debuggee start ->', startResult, breakerType)
+-- local json = require 'dkjson'
+-- local debuggee = require 'vscode-debuggee'
+-- local startResult, breakerType = debuggee.start(json)
+-- print('debuggee start ->', startResult, breakerType)
+local breakSocketHandle, debugXpCall = require("LuaDebug")("localhost", 7003)
 
 function cclog( ... )
     print(string.format(...))
@@ -36,7 +37,7 @@ function main()
 
     -- 初始化显示的帧率等参数
     local director = cc.Director:getInstance()
-    director:getOpenGLView():setDesignResolutionSize(2048, 1080, 0)
+    director:getOpenGLView():setDesignResolutionSize(960, 640, 0)
 
     director:setDisplayStats(true)
     director:setAnimationInterval(1.0/60.0)
@@ -47,8 +48,9 @@ function main()
     -- 创建场景
     -- local scene = require("GameScene")
     -- local scene = require("StartScene")
+    local scene = require("tower/TowerScene")
     -- local scene = require("ch8/GameScene")
-    local scene = require("ch8/AnimateScene")
+    -- local scene = require("ch8/AnimateScene")
     -- local scene = require("ch9event/GameScene")
     -- local scene = require("ch13physics/GameScene")
     -- local scene = require("ch14ui/GameScene")
@@ -66,5 +68,6 @@ end
 
 local status, msg = xpcall(main, __G__TRACKBACK__)
 if not status then
+    -- debugXpCall()
     error(msg)
 end

@@ -5,19 +5,20 @@ local SpriteScene  = class("SpriteScene", function()
 end)
 
 function SpriteScene.create(...)
-	local scene = SpriteScene .new()
+	local scene = SpriteScene.new()
 	scene:addChild(scene:createLayer())
 	return scene
 end
 
-function SpriteScene:actor()
+function SpriteScene:ctor()
 end
 
 function SpriteScene:createLayer(...)
 	cclog("Game Scene Init")
 	local layer = cc.Layer:create()
 	
-    local sBackground = cc.Sprite:create("background.png")
+    -- local sBackground = cc.Sprite:create("background.png")
+    local sBackground = require("SpriteItem").create("background.png")
     sBackground:setPosition(cc.p(size.width/2,size.height/2))
     layer:addChild(sBackground)
 
@@ -33,19 +34,19 @@ function SpriteScene:createLayer(...)
     -- tree2:setPosition(cc.p(500,200))
     -- layer:addChild(tree2, 0)
 
-    -- sprite frame
-    local frameCache = cc.SpriteFrameCache:getInstance()
-    frameCache:addSpriteFrames("SpirteSheet.plist")
+    -- -- sprite frame
+    -- local frameCache = cc.SpriteFrameCache:getInstance()
+    -- frameCache:addSpriteFrames("SpirteSheet.plist")
 
-    local mountain1 = cc.Sprite:createWithSpriteFrameName("mountain1.png")
-    mountain1:setAnchorPoint(cc.p(0,0))
-    mountain1:setPosition(cc.p(-200,80))
-    layer:addChild(mountain1, 0)
+    -- local mountain1 = cc.Sprite:createWithSpriteFrameName("mountain1.png")
+    -- mountain1:setAnchorPoint(cc.p(0,0))
+    -- mountain1:setPosition(cc.p(-200,80))
+    -- layer:addChild(mountain1, 0)
 
-    local heroSpriteFrame = frameCache:getSpriteFrameByName("hero1.png")
-    local hero1 = cc.Sprite:createWithSpriteFrame(heroSpriteFrame)
-    hero1:setPosition(cc.p(800,200))
-    layer:addChild(hero1, 0)
+    -- local heroSpriteFrame = frameCache:getSpriteFrameByName("hero1.png")
+    -- local hero1 = cc.Sprite:createWithSpriteFrame(heroSpriteFrame)
+    -- hero1:setPosition(cc.p(800,200))
+    -- layer:addChild(hero1, 0)
 	
 	return layer
 end
