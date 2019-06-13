@@ -16,11 +16,11 @@
 -- end
 require("cocos.init")
 
--- local json = require 'dkjson'
--- local debuggee = require 'vscode-debuggee'
--- local startResult, breakerType = debuggee.start(json)
--- print('debuggee start ->', startResult, breakerType)
-local breakSocketHandle, debugXpCall = require("LuaDebug")("localhost", 7003)
+local json = require 'dkjson'
+local debuggee = require 'vscode-debuggee'
+local startResult, breakerType = debuggee.start(json)
+print('debuggee start ->', startResult, breakerType)
+-- local breakSocketHandle, debugXpCall = require("LuaDebug")("localhost", 7003)
 
 function cclog( ... )
     print(string.format(...))
