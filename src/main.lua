@@ -15,6 +15,7 @@
 --     print(msg)
 -- end
 require("cocos.init")
+require("hat/VisibleRect")
 
 local json = require 'dkjson'
 local debuggee = require 'vscode-debuggee'
@@ -48,7 +49,8 @@ function main()
     -- 创建场景
     -- local scene = require("GameScene")
     -- local scene = require("StartScene")
-    local scene = require("tower/TowerScene")
+    -- local scene = require("tower/TowerScene")
+    local scene = require("hat/HatScene")
     -- local scene = require("ch8/GameScene")
     -- local scene = require("ch8/AnimateScene")
     -- local scene = require("ch9event/GameScene")
