@@ -19,7 +19,7 @@ function HatScene:actor()
 end
 
 local function makeBox(point, size, color, material)
-    material = material or MATERIAL_DEFAULT
+    material = FLOOR_MATERIAL
 
     local yellow = false
     if color == 0 then
@@ -50,12 +50,18 @@ function HatScene:createLayer()
     self.Player = require("Hat/Player").create(layer)
     layer:addChild(self.Player)
 
-    local platform = makeBox(VisibleRect:center(), cc.size(700, 20))
-    local platformPhysicsBody = platform:getPhysicsBody()
-    platformPhysicsBody:setDynamic(false)
-    platformPhysicsBody:setContactTestBitmask(0xFFFFFFFF)
-    platform:setRotation(-45)
-    layer:addChild(platform)
+    local hat = require("Hat/Hat").create(layer)
+    layer:addChild(hat)
+
+    -- local p = VisibleRect:center()
+    -- local platform = makeBox(cc.p(p.x, p.y-100), cc.size(700, 20))
+    -- local platformPhysicsBody = platform:getPhysicsBody()
+    -- platformPhysicsBody:setTag(FLOOR_TAG)
+    -- platformPhysicsBody:setDynamic(false)
+    -- platformPhysicsBody:setContactTestBitmask(0xFFFFFFFF)
+    -- layer:addChild(platform)
+
+    -- print("player:", platformPhysicsBody)
 
     return layer
 end

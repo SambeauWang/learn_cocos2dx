@@ -16,6 +16,7 @@
 -- end
 require("cocos.init")
 require("hat/VisibleRect")
+require("hat/Const")
 
 local json = require 'dkjson'
 local debuggee = require 'vscode-debuggee'

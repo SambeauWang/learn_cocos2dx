@@ -1,6 +1,3 @@
-local MATERIAL_DEFAULT = cc.PhysicsMaterial(0.1, 0.5, 0.5)
-local DRAG_BODYS_TAG = 0x80
-
 local Player = class("Player", function(layer)
     return cc.Sprite:create("grossini.png")
 end)
@@ -12,17 +9,20 @@ end
 function Player:ctor(layer)
     self.layer = layer
     self:setScale(1.3)
+    self.hats = {}
 
-    self.PhysicsBody = cc.PhysicsBody:createBox(self:getContentSize(), cc.PhysicsMaterial(0.1, 0.5, 0.0))
+    self.PhysicsBody = cc.PhysicsBody:createBox(self:getContentSize(), PLAYER_MATERIAL)
     self:setPhysicsBody(self.PhysicsBody)
-    self:setPosition(cc.p(0, VisibleRect:center().y - 50))
+    self.PhysicsBody.Object = self
+    self:setPosition(cc.p(VisibleRect:center().x, VisibleRect:center().y - 150))
 
     self.PhysicsBody:setVelocity(cc.p(0, 150))
-    self.PhysicsBody:setTag(DRAG_BODYS_TAG)
+    self.PhysicsBody:setTag(PLAYER_TAG)
     self.PhysicsBody:setMass(1.0)
     self.PhysicsBody:setContactTestBitmask(0xFFFFFFFF)
 
     self:initKeyBoard()
+    self:initContact()
 end
 
 function Player:initKeyBoard()
@@ -31,7 +31,7 @@ function Player:initKeyBoard()
     end
 
     local listener = cc.EventListenerKeyboard:create()
-    listener:registerScriptHandler(onKeyPressed, cc.Handler.EVENT_KEYBOARD_PRESSED )
+    listener:registerScriptHandler(onKeyPressed, cc.Handler.EVENT_KEYBOARD_PRESSED)
 
     local eventDispatcher = self.layer:getEventDispatcher()
     eventDispatcher:addEventListenerWithSceneGraphPriority(listener, self)
@@ -51,6 +51,40 @@ function Player:onKeyPressed(keyCode, event)
         local Dir = cc.pAdd(curVelocity, cc.p(100, 0))
         self.PhysicsBody:setVelocity(Dir)
     end
+end
+
+function Player:initContact()
+    local contactListener = cc.EventListenerPhysicsContact:create()
+    contactListener:registerScriptHandler(function(contact)
+        return self:onContactBegin(contact)
+    end, cc.Handler.EVENT_PHYSICS_CONTACT_BEGIN)
+    local eventDispatcher = self.layer:getEventDispatcher()
+    eventDispatcher:addEventListenerWithSceneGraphPriority(contactListener, self.layer)
+end
+
+function Player:onContactBegin(contact)
+    local a = contact:getShapeA():getBody()
+    local b = contact:getShapeB():getBody()
+    if (a:getTag() == 0x01 and b:getTag() == 0x02) or (b:getTag() == 0x01 and a:getTag() == 0x02) then
+        local player, Floor
+        if a:getTag() == 0x01 then
+            player = a
+            Floor = b
+        else
+            player = b
+            Floor = a
+        end
+
+        local pos1 = player:getPosition()
+        local pos2 = contact:getContactData().points[1]
+        if pos1.y < pos2.y then
+            return false
+        else
+            return true
+        end
+    end
+    print("touch")
+    return true
 end
 
 return Player
