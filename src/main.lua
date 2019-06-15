@@ -39,7 +39,8 @@ function main()
 
     -- 初始化显示的帧率等参数
     local director = cc.Director:getInstance()
-    director:getOpenGLView():setDesignResolutionSize(960, 640, 0)
+    director:getOpenGLView():setDesignResolutionSize(1080, 500, 0)
+    director:getOpenGLView():setFrameSize(1080, 500)
 
     director:setDisplayStats(true)
     director:setAnimationInterval(1.0/60.0)

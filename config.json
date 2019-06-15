@@ -3,8 +3,8 @@
        "isLandscape": true,
        "isWindowTop": false,
        "name": "MyGame",
-       "width": 960,
-       "height": 640,
+       "width": 1080,
+       "height": 500,
        "entry": "src/main.lua",
        "consolePort": 6050,
        "uploadPort": 6060

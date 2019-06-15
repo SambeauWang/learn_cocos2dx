@@ -16,12 +16,12 @@ function Hat:ctor(layer)
     self.PhysicsBody:setTag(HAT_TAG)
     self.PhysicsBody:setMass(1.0)
 
-    self.PhysicsBody:setGroup(-HAT_TAG)
-    -- self.PhysicsBody:setCategoryBitmask(HAT_TAG)
+    -- self.PhysicsBody:setGroup(-HAT_TAG)
+    self.PhysicsBody:setCategoryBitmask(HAT_TAG)
     -- self.PhysicsBody:setContactTestBitmask(bit.bor(0xFFFFFFFF, -1))
     -- self.PhysicsBody:setContactTestBitmask(bit.bor(0xFFFFFFFF, -HAT_TAG))
-    self.PhysicsBody:setContactTestBitmask(0xFFFFFFFF)
-    -- self.PhysicsBody:setCollisionBitmask(16)
+    self.PhysicsBody:setContactTestBitmask(PLAYER_TAG)
+    self.PhysicsBody:setCollisionBitmask(GROUND_TAG)
 
     -- 碰撞相关
     self:setLocalZOrder(0)
@@ -29,7 +29,7 @@ function Hat:ctor(layer)
 end
 
 function Hat:initContact()
-    local contactListener = cc.EventListenerPhysicsContactWithGroup:create(-HAT_TAG)
+    local contactListener = cc.EventListenerPhysicsContact:create()
     contactListener:registerScriptHandler(function(contact)
         return self:onContactBegin(contact)
     end, cc.Handler.EVENT_PHYSICS_CONTACT_BEGIN)
@@ -42,9 +42,13 @@ function Hat:initContact()
 end
 
 function Hat:onContactBegin(contact)
-    print("Hat")
     local a = contact:getShapeA():getBody()
     local b = contact:getShapeB():getBody()
+    local aTag = a:getTag()
+    local bTag = b:getTag()
+    if not (aTag == HAT_TAG or bTag == HAT_TAG) then return end
+    print("Hat")
+
     if (a:getTag() == PLAYER_TAG and b:getTag() == HAT_TAG) or (b:getTag() == PLAYER_TAG and a:getTag() == HAT_TAG) then
         local player = a:getTag() == PLAYER_TAG and a.Object or b.Object
         local hat = a:getTag() == PLAYER_TAG and b.Object or a.Object
