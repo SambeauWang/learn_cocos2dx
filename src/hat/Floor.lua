@@ -61,6 +61,7 @@ function Floor:onContactBegin(contact)
         if pos1.y < pos2.y then
             return false
         else
+            player.Object:ClearStatus()
             return true
         end
     end

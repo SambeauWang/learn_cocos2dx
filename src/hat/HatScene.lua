@@ -88,9 +88,10 @@ function HatScene:createLayer()
     -- 创建角色
     self.Player1 = require("Hat/Player").create(layer)
     layer:addChild(self.Player1)
+    self.Player1:setPosition(Player1Pos)
     self.Player2 = require("Hat/Player").create(layer)
     layer:addChild(self.Player2)
-    self.Player2:setPosition(cc.p(VisibleRect:center().x+100, VisibleRect:center().y - 130))
+    self.Player2:setPosition(Player2Pos)
 
     self.PlayerController = require("Hat/PlayerController").create(self.Player1, self.Player2)
     layer:addChild(self.PlayerController)
@@ -102,7 +103,7 @@ function HatScene:createLayer()
     -- local floor = require("Hat/Floor").create(layer, cc.p(p.x-100, p.y), cc.size(700, 20), "YellowSquare.png")
     -- layer:addChild(floor)
 
-    for i=1, 43 do
+    for i=1, #TileMap do
         local floor = require("Hat/Floor").create(layer, cc.p(TileMap[i].x, TileMap[i].y), cc.size(TileMap[i].width, TileMap[i].height), "YellowSquare.png")
         layer:addChild(floor)
     end

@@ -29,11 +29,14 @@ function Hat:ctor(layer)
     self:initContact()
 end
 
+function Hat:ClearStatus()
+end
+
 function Hat:initContact()
     local contactListener = cc.EventListenerPhysicsContact:create()
     contactListener:registerScriptHandler(function(contact)
         return self:onContactBegin(contact)
-    end, cc.Handler.EVENT_PHYSICS_CONTACT_BEGIN)
+    end, cc.Handler.EVENT_PHYSICS_CONTACT_PRESOLVE)
     local eventDispatcher = self.layer:getEventDispatcher()
 
     local node = cc.Node:create()
@@ -53,7 +56,6 @@ function Hat:onContactBegin(contact)
     if a:getTag() == PLAYER_TAG or b:getTag() == PLAYER_TAG then
         local player = a:getTag() == PLAYER_TAG and a.Object or b.Object
         local hat = a:getTag() == PLAYER_TAG and b.Object or a.Object
-        local hatBody = hat.Object
         hat:runAction(
             cc.CallFunc:create(function()
                 hat:getPhysicsBody():setEnabled(false)
@@ -62,7 +64,9 @@ function Hat:onContactBegin(contact)
 
                 player:addChild(hat)
                 local Size = player:getContentSize()
-                hat:setPosition(cc.p(Size.width/2, Size.height + 10*(#player.hats + 1)))
+                local nHats = #player.hats + 1
+                hat:setPosition(cc.p(PlayerWidth/2, PlayerHeight + 10*nHats))
+                print(Size.width, Size.height, PlayerHeight + 10*nHats)
 
                 table.insert(player.hats, hat)
             end)

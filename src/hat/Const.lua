@@ -5,7 +5,7 @@ _G.HAT_TAG = 0x04
 _G.GROUND_TAG = 0x08
 
 -- 人物的物理属性(_, 弹力, 摩檫力)
-PLAYER_MATERIAL = cc.PhysicsMaterial(0.1, 0.5, 0.9)
+PLAYER_MATERIAL = cc.PhysicsMaterial(10000.0, 0.5, 0.9)
 -- 帽子的物理属性(_, 弹力, 摩檫力)
 HAT_MATERIAL = cc.PhysicsMaterial(0.1, 0.5, 1.0)
 -- 底板的物理属性(_, 弹力, 摩檫力)
@@ -30,3 +30,11 @@ HatUpSpeed = 20
 -- 帽子横向的速度
 HatDefaultRightSpeed = 180
 HatMaxRightSpeed = 250
+
+-- 角色的大小
+PlayerHeight = 50
+PlayerWidth = 40
+
+-- 角色1的大小
+Player1Pos = cc.p(100, 120)
+Player2Pos = cc.p(400, 120)

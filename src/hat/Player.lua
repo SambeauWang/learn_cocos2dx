@@ -9,11 +9,13 @@ end
 function Player:ctor(layer)
     self.layer = layer
     self.isRunning = 0
+    self.JumpCnt = 0
     self.hats = {}
+    self.Forward = 1
 
     -- 设置大小
     local Size = self:getContentSize()
-    self:setContentSize(cc.size(40, 50))
+    self:setContentSize(cc.size(PlayerWidth, PlayerHeight))
 
     self.PhysicsBody = cc.PhysicsBody:createBox(self:getContentSize(), PLAYER_MATERIAL)
     self:setPhysicsBody(self.PhysicsBody)
@@ -24,6 +26,7 @@ function Player:ctor(layer)
     self.PhysicsBody:setTag(PLAYER_TAG)
     self.PhysicsBody:setMass(1.0)
     self.PhysicsBody:setRotationEnable(false)
+    self.PhysicsBody.Object = self
 
     -- 碰撞相关
     -- self:setLocalZOrder(1)
@@ -56,28 +59,30 @@ function Player:Shot()
     local x, y = self:getPosition()
     local Size = self:getContentSize()
     local curVelocity = self.PhysicsBody:getVelocity()
-    if curVelocity.x > 0 then
-        hat:setPosition(cc.p(x+Size.width+20, y+Size.height/2))
-        local VelocityX = math.min(HatDefaultRightSpeed + curVelocity.x, HatMaxRightSpeed)
-        hat.PhysicsBody:setVelocity(cc.p(VelocityX, HatUpSpeed))
-    else
-        hat:setPosition(cc.p(x-Size.width-20, y+Size.height/2))
-        local VelocityX = math.max(-HatDefaultRightSpeed + curVelocity.x, -HatMaxRightSpeed)
-        hat.PhysicsBody:setVelocity(cc.p(VelocityX, HatUpSpeed))
-    end
+
+    hat:setPosition(cc.p(x+(Size.width+20)*self.Forward, y+Size.height/2))
+    local VelocityX = math.max(HatDefaultRightSpeed*self.Forward + curVelocity.x, HatMaxRightSpeed*self.Forward)
+    hat.PhysicsBody:setVelocity(cc.p(VelocityX, HatUpSpeed))
+end
+
+function Player:ClearStatus()
+    self.JumpCnt = 0
 end
 
 function Player:Right(Stop)
+    self.Forward = 1
     self.isRunning = Stop and 1.0 or 0.0
 end
 
 function Player:Left(Stop)
+    self.Forward = -1
     self.isRunning = Stop and -1.0 or 0.0
 end
 
 function Player:Jump()
     local curVelocity = self.PhysicsBody:getVelocity()
-    if curVelocity.y <= 1.0 then
+    if self.JumpCnt < 2 then
+        self.JumpCnt = self.JumpCnt + 1
         self.PhysicsBody:setVelocity(cc.p(curVelocity.x, InitSpeedY))
     end
 end
@@ -163,15 +168,9 @@ function Player:onContactBegin(contact)
 
     if (aTag == FLOOR_TAG) or (bTag == FLOOR_TAG) then
         local player = aTag == PLAYER_TAG and a or b
-
         local pos1 = player:getPosition()
         local pos2 = contact:getContactData().points[1]
-        print("Jump")
-        if pos1.y < pos2.y then
-            return false
-        else
-            return true
-        end
+        self.JumpCnt = pos1.y < pos2.y and self.JumpCnt or 0
     end
     return false
 end
