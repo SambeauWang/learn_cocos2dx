@@ -49,7 +49,7 @@ function Floor:onContactBegin(contact)
     local aTag = a:getTag()
     local bTag = b:getTag()
     if not (aTag == FLOOR_TAG or bTag == FLOOR_TAG) then return end
-    print("Floor Contact")
+    -- print("Floor Contact")
 
     local player
     if aTag == PLAYER_TAG or aTag == HAT_TAG then player = a end
@@ -57,7 +57,7 @@ function Floor:onContactBegin(contact)
     if player then
         local pos1 = player:getPosition()
         local pos2 = contact:getContactData().points[1]
-        print("Touch Floor", pos1.y < pos2.y)
+        -- print("Touch Floor", pos1.y < pos2.y)
         if pos1.y < pos2.y then
             return false
         else

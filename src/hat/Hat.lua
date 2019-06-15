@@ -26,7 +26,12 @@ function Hat:ctor(layer)
 
     -- 碰撞相关
     self:setLocalZOrder(0)
-    self:initContact()
+    -- self:initContact()
+
+    -- 每帧Loop
+    self:scheduleUpdateWithPriorityLua(function(dt)
+        self:schedule(dt)
+    end, 0)
 end
 
 function Hat:ClearStatus()
@@ -43,6 +48,23 @@ function Hat:initContact()
     node:setLocalZOrder(2)
     self.layer:addChild(node)
     eventDispatcher:addEventListenerWithSceneGraphPriority(contactListener, node)
+end
+
+function Hat:schedule(dt)
+    for _, v in ipairs(self.layer.uParent.players) do
+        local vPosition = cc.p(v:getPosition())
+        local hPosition = cc.p(self:getPosition())
+        if cc.pGetDistance(vPosition, hPosition) < 45 then
+            self:getPhysicsBody():setEnabled(false)
+            self:retain()
+            self:removeFromParent(false)
+
+            v:addChild(self)
+            local nHats = #v.hats + 1
+            self:setPosition(cc.p(PlayerWidth/2, PlayerHeight + 23*nHats))
+            table.insert(v.hats, self)
+        end
+    end
 end
 
 function Hat:onContactBegin(contact)

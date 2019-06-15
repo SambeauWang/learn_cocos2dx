@@ -14,33 +14,13 @@ end)
 function HatScene.create()
     local scene = HatScene.new()
     scene.layer = scene:createLayer()
+    scene.layer.uParent = scene
     scene:addChild(scene.layer)
     return scene
 end
 
 function HatScene:actor()
-end
-
-local function makeBox(point, size, color, material)
-    material = FLOOR_MATERIAL
-
-    local yellow = false
-    if color == 0 then
-        yellow = math.random() > 0.5
-    else
-        yellow = color == 1
-    end
-
-    local box = yellow and cc.Sprite:create("YellowSquare.png") or cc.Sprite:create("CyanSquare.png")
-
-    box:setScaleX(size.width/100.0)
-    box:setScaleY(size.height/100.0)
-
-    local body = cc.PhysicsBody:createBox(box:getContentSize(), material)
-    box:setPhysicsBody(body)
-    box:setPosition(cc.p(point.x, point.y))
-
-    return box
+    self.players = {}
 end
 
 function HatScene:createGround(leftBottom, RightTop)
@@ -92,6 +72,7 @@ function HatScene:createLayer()
     self.Player2 = require("Hat/Player").create(layer)
     layer:addChild(self.Player2)
     self.Player2:setPosition(Player2Pos)
+    self.players = {self.Player1, self.Player2}
 
     self.PlayerController = require("Hat/PlayerController").create(self.Player1, self.Player2)
     layer:addChild(self.PlayerController)
