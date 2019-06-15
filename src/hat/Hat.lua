@@ -15,6 +15,7 @@ function Hat:ctor(layer)
     self.PhysicsBody.Object = self
     self:setPosition(cc.p(VisibleRect:center().x - 150, VisibleRect:center().y - 150))
     self.PhysicsBody:setTag(HAT_TAG)
+    self.PhysicsBody:setRotationEnable(false)
     self.PhysicsBody:setMass(1.0)
 
     -- self.PhysicsBody:setGroup(-HAT_TAG)

@@ -13,6 +13,8 @@ function Player:ctor(layer)
     self.hats = {}
     self.Forward = 1
 
+    self.CurHp = 50
+
     -- 设置大小
     local Size = self:getContentSize()
     self:setContentSize(cc.size(PlayerWidth, PlayerHeight))
@@ -49,12 +51,26 @@ function Player:schedule(dt)
     local curVelocity = self.PhysicsBody:getVelocity()
     local VelocityX = math.max(math.min(curVelocity.x + self.isRunning*AcceleratedSpeedX*dt, MaxSpeedX), -MaxSpeedX)
     self.PhysicsBody:setVelocity(cc.p(VelocityX, curVelocity.y))
+
+    local _, y = self:getPosition()
+    -- TODO 都加25的偏移
+    if self.layer.uParent.DeadLine + self:getContentSize().height + 25 >= y then
+        self.JumpCnt = 0
+    end
 end
 
 function Player:Shot()
-    -- add Hat
-    local hat = require("Hat/Hat").create(self.layer)
+    local nHats = #self.hats
+    if nHats <= 0 then
+        return
+    end
+    local hat = self.hats[nHats]
+    table.remove(self.hats, nHats)
+    hat:retain()
+    hat:removeFromParent(false)
+    print(nHats, hat, self.layer)
     self.layer:addChild(hat)
+    hat:getPhysicsBody():setEnabled(true)
 
     local x, y = self:getPosition()
     local Size = self:getContentSize()
@@ -84,64 +100,6 @@ function Player:Jump()
     if self.JumpCnt < 2 then
         self.JumpCnt = self.JumpCnt + 1
         self.PhysicsBody:setVelocity(cc.p(curVelocity.x, InitSpeedY))
-    end
-end
-
-function Player:initKeyBoard()
-    local function onKeyPressed(keyCode, event)
-        self:onKeyPressed(keyCode, event)
-    end
-
-    local onKeyReleased = function(keyCode, event)
-        self:onKeyReleased(keyCode, event)
-    end
-
-    local listener = cc.EventListenerKeyboard:create()
-    listener:registerScriptHandler(onKeyPressed, cc.Handler.EVENT_KEYBOARD_PRESSED)
-    listener:registerScriptHandler(onKeyReleased, cc.Handler.EVENT_KEYBOARD_RELEASED)
-
-    local eventDispatcher = self.layer:getEventDispatcher()
-    eventDispatcher:addEventListenerWithSceneGraphPriority(listener, self.layer)
-end
-
-function Player:onKeyPressed(keyCode, event)
-    local curVelocity = self.PhysicsBody:getVelocity()
-    if keyCode == cc.KeyCode.KEY_W then
-        if curVelocity.y <= 1.0 then
-            self.PhysicsBody:setVelocity(cc.p(curVelocity.x, InitSpeedY))
-        end
-    elseif keyCode == cc.KeyCode.KEY_A then
-        self.isRunning = -1.0
-    elseif keyCode == cc.KeyCode.KEY_D then
-        self.isRunning = 1.0
-    elseif keyCode == cc.KeyCode.KEY_J then
-        local hat = require("Hat/Hat").create(self.layer)
-        self.layer:addChild(hat)
-
-        local x, y = self:getPosition()
-        local Size = self:getContentSize()
-        if curVelocity.x > 0 then
-            hat:setPosition(cc.p(x+Size.width+20, y+Size.height/2))
-            local VelocityX = math.min(HatDefaultRightSpeed + curVelocity.x, HatMaxRightSpeed)
-            hat.PhysicsBody:setVelocity(cc.p(VelocityX, HatUpSpeed))
-        else
-            hat:setPosition(cc.p(x-Size.width-20, y+Size.height/2))
-            local VelocityX = math.max(-HatDefaultRightSpeed + curVelocity.x, -HatMaxRightSpeed)
-            hat.PhysicsBody:setVelocity(cc.p(VelocityX, HatUpSpeed))
-        end
-    end
-end
-
-function Player:onKeyReleased(keyCode, event)
-    if keyCode == cc.KeyCode.KEY_W then
-        -- if curVelocity.y <= 1.0 then
-        --     local Dir = cc.pAdd(curVelocity, cc.p(0, 150))
-        --     self.PhysicsBody:setVelocity(Dir)
-        -- end
-    elseif keyCode == cc.KeyCode.KEY_A then
-        self.isRunning = 0.0
-    elseif keyCode == cc.KeyCode.KEY_D then
-        self.isRunning = 0.0
     end
 end
 

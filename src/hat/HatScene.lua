@@ -19,18 +19,36 @@ function HatScene.create()
     return scene
 end
 
-function HatScene:actor()
-    self.players = {}
+function HatScene:ctor()
+    -- self.players = {}
+end
+
+function HatScene:schedule(dt)
+    if self.GameOver then return end
+    self.PastTime = self.PastTime + dt
+
+    for i, v in ipairs(self.players) do
+        local _, y = v:getPosition()
+        if y + v:getContentSize().height/2 + (#v.hats)* 20 >= 980 then
+            self.GameOver = true
+            self.WinLabel:setString(string.format("%s Win!", i==1 and "Player2" or "Player1"))
+            return
+        end
+    end
+
+    if self.PastTime > 10 then
+        self.DeadLine = VisibleRect:leftBottom().y + 50 + 15*(self.PastTime - 10)
+        self.ground:setPositionY(self.DeadLine)
+    end
 end
 
 function HatScene:createGround(leftBottom, RightTop)
     local ground = cc.Node:create()
-    local groudPhysicsBody = cc.PhysicsBody:createEdgeSegment(leftBottom, RightTop)
-    ground:setPhysicsBody(groudPhysicsBody)
-    groudPhysicsBody:setCategoryBitmask(GROUND_TAG)
-    groudPhysicsBody:setContactTestBitmask(0xFFFFFFFF)
-    groudPhysicsBody:setCollisionBitmask(bit.bor(PLAYER_TAG, HAT_TAG))
-    -- layer:addChild(ground)
+    ground.groudPhysicsBody = cc.PhysicsBody:createEdgeSegment(leftBottom, RightTop)
+    ground:setPhysicsBody(ground.groudPhysicsBody)
+    ground.groudPhysicsBody:setCategoryBitmask(GROUND_TAG)
+    ground.groudPhysicsBody:setContactTestBitmask(0xFFFFFFFF)
+    ground.groudPhysicsBody:setCollisionBitmask(bit.bor(PLAYER_TAG, HAT_TAG))
     return ground
 end
 
@@ -47,11 +65,11 @@ function HatScene:createLayer()
     -- groudPhysicsBody:setContactTestBitmask(0xFFFFFFFF)
     -- groudPhysicsBody:setCollisionBitmask(bit.bor(PLAYER_TAG, HAT_TAG))
 
-    local ground = self:createGround(
+    self.ground = self:createGround(
         cc.p(VisibleRect:leftBottom().x,VisibleRect:leftBottom().y + 50),
         cc.p(VisibleRect:rightBottom().x,VisibleRect:rightBottom().y + 50)
     )
-    layer:addChild(ground)
+    layer:addChild(self.ground)
 
     local wall1 = self:createGround(
         cc.p(VisibleRect:leftBottom().x - 2, VisibleRect:leftBottom().y),
@@ -103,6 +121,19 @@ function HatScene:createLayer()
     -- platform:setLocalZOrder(-1)
 
     -- print("player:", platformPhysicsBody)
+
+    self.WinLabel = cc.Label:createWithTTF("", "fonts/arial.ttf", 32)
+    layer:addChild(self.WinLabel, 1)
+    self.WinLabel:setAnchorPoint(cc.p(0.5, 0.5))
+    self.WinLabel:setPosition(cc.p(VisibleRect:center().x, VisibleRect:top().y-90))
+
+    self.PastTime = 0
+    self.GameOver = false
+    self.DeadLine = VisibleRect:leftBottom().y + 50
+
+    layer:scheduleUpdateWithPriorityLua(function(dt)
+        self:schedule(dt)
+    end, 0)
 
     return layer
 end

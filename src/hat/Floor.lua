@@ -57,8 +57,8 @@ function Floor:onContactBegin(contact)
     if player then
         local pos1 = player:getPosition()
         local pos2 = contact:getContactData().points[1]
-        -- print("Touch Floor", pos1.y < pos2.y)
-        if pos1.y < pos2.y then
+        -- Fix 距离偏移
+        if pos1.y - player.Object:getContentSize().height/2 + 5 < pos2.y then
             return false
         else
             player.Object:ClearStatus()
