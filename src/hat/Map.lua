@@ -1,4 +1,4 @@
-Map = {
+TileMap = {
     {Name="6-6-2", x=110, y=890, width=20, height=20, res=""},
     {Name="6-6-1", x=390, y=890, width=20, height=20, res=""},
     {Name="6-5-4", x=20, y=870, width=40, height=20, res=""},

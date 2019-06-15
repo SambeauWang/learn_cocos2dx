@@ -43,19 +43,47 @@ local function makeBox(point, size, color, material)
     return box
 end
 
-function HatScene:createLayer()
-    local layer = cc.Layer:create()
-
+function HatScene:createGround(leftBottom, RightTop)
     local ground = cc.Node:create()
-    local groudPhysicsBody = cc.PhysicsBody:createEdgeSegment(
-        cc.p(VisibleRect:leftBottom().x,VisibleRect:leftBottom().y + 50),
-        cc.p(VisibleRect:rightBottom().x,VisibleRect:rightBottom().y + 50)
-    )
+    local groudPhysicsBody = cc.PhysicsBody:createEdgeSegment(leftBottom, RightTop)
     ground:setPhysicsBody(groudPhysicsBody)
     groudPhysicsBody:setCategoryBitmask(GROUND_TAG)
     groudPhysicsBody:setContactTestBitmask(0xFFFFFFFF)
     groudPhysicsBody:setCollisionBitmask(bit.bor(PLAYER_TAG, HAT_TAG))
+    -- layer:addChild(ground)
+    return ground
+end
+
+function HatScene:createLayer()
+    local layer = cc.Layer:create()
+
+    -- local ground = cc.Node:create()
+    -- local groudPhysicsBody = cc.PhysicsBody:createEdgeSegment(
+    --     cc.p(VisibleRect:leftBottom().x,VisibleRect:leftBottom().y + 50),
+    --     cc.p(VisibleRect:rightBottom().x,VisibleRect:rightBottom().y + 50)
+    -- )
+    -- ground:setPhysicsBody(groudPhysicsBody)
+    -- groudPhysicsBody:setCategoryBitmask(GROUND_TAG)
+    -- groudPhysicsBody:setContactTestBitmask(0xFFFFFFFF)
+    -- groudPhysicsBody:setCollisionBitmask(bit.bor(PLAYER_TAG, HAT_TAG))
+
+    local ground = self:createGround(
+        cc.p(VisibleRect:leftBottom().x,VisibleRect:leftBottom().y + 50),
+        cc.p(VisibleRect:rightBottom().x,VisibleRect:rightBottom().y + 50)
+    )
     layer:addChild(ground)
+
+    local wall1 = self:createGround(
+        cc.p(VisibleRect:leftBottom().x - 2, VisibleRect:leftBottom().y),
+        cc.p(VisibleRect:leftBottom().x - 2, VisibleRect:leftTop().y)
+    )
+    layer:addChild(wall1)
+
+    local wall2 = self:createGround(
+        cc.p(VisibleRect:rightBottom().x + 2, VisibleRect:rightBottom().y),
+        cc.p(VisibleRect:rightBottom().x + 2, VisibleRect:rightTop().y)
+    )
+    layer:addChild(wall2)
 
     -- 创建角色
     self.Player1 = require("Hat/Player").create(layer)
@@ -70,8 +98,14 @@ function HatScene:createLayer()
     local hat = require("Hat/Hat").create(layer)
     layer:addChild(hat)
 
-    local floor = require("Hat/Floor").create(layer, "YellowSquare.png")
-    layer:addChild(floor)
+    -- local p = VisibleRect:center()
+    -- local floor = require("Hat/Floor").create(layer, cc.p(p.x-100, p.y), cc.size(700, 20), "YellowSquare.png")
+    -- layer:addChild(floor)
+
+    for i=1, 43 do
+        local floor = require("Hat/Floor").create(layer, cc.p(TileMap[i].x, TileMap[i].y), cc.size(TileMap[i].width, TileMap[i].height), "YellowSquare.png")
+        layer:addChild(floor)
+    end
 
     -- local p = VisibleRect:center()
     -- local platform = makeBox(cc.p(p.x, p.y-100), cc.size(700, 20))

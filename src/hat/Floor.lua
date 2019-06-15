@@ -1,21 +1,22 @@
-local Floor = class("Floor", function(layer, res)
+local Floor = class("Floor", function(layer, position, size, res)
     return cc.Sprite:create(res)
 end)
 
-function Floor.create(layer, res)
-    return Floor.new(layer, res)
+function Floor.create(layer, position, size, res)
+    return Floor.new(layer, position, size, res)
 end
 
-function Floor:ctor(layer)
+function Floor:ctor(layer, position, size)
     self.layer = layer
 
     -- 初始化物理
-    local p = VisibleRect:center()
-    self:setScaleX(700/100.0)
-    self:setScaleY(20/100.0)
+    -- local p = VisibleRect:center()
+    self:setScaleX(size.width/100.0)
+    self:setScaleY(size.height/100.0)
     self.PhysicsBody = cc.PhysicsBody:createBox(self:getContentSize(), FLOOR_MATERIAL)
     self:setPhysicsBody(self.PhysicsBody)
-    self:setPosition(cc.p(p.x, p.y-100))
+    self:setAnchorPoint(cc.p(0.5, 0.5))
+    self:setPosition(position)
 
     self.PhysicsBody:setTag(FLOOR_TAG)
     self.PhysicsBody:setCategoryBitmask(FLOOR_TAG)

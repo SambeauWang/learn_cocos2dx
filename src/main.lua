@@ -17,6 +17,7 @@
 require("cocos.init")
 require("hat/VisibleRect")
 require("hat/Const")
+require("hat/Map")
 
 local json = require 'dkjson'
 local debuggee = require 'vscode-debuggee'
@@ -39,8 +40,8 @@ function main()
 
     -- 初始化显示的帧率等参数
     local director = cc.Director:getInstance()
-    director:getOpenGLView():setDesignResolutionSize(1080, 500, 0)
-    director:getOpenGLView():setFrameSize(1080, 500)
+    director:getOpenGLView():setDesignResolutionSize(500, 1080, 0)
+    director:getOpenGLView():setFrameSize(500, 1080)
 
     director:setDisplayStats(true)
     director:setAnimationInterval(1.0/60.0)
