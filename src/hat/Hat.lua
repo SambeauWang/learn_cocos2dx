@@ -22,7 +22,7 @@ function Hat:ctor(layer)
     -- self.PhysicsBody:setContactTestBitmask(bit.bor(0xFFFFFFFF, -1))
     -- self.PhysicsBody:setContactTestBitmask(bit.bor(0xFFFFFFFF, -HAT_TAG))
     self.PhysicsBody:setContactTestBitmask(PLAYER_TAG)
-    self.PhysicsBody:setCollisionBitmask(GROUND_TAG)
+    self.PhysicsBody:setCollisionBitmask(bit.bor(GROUND_TAG, FLOOR_TAG))
 
     -- 碰撞相关
     self:setLocalZOrder(0)
@@ -50,10 +50,10 @@ function Hat:onContactBegin(contact)
     if not (aTag == HAT_TAG or bTag == HAT_TAG) then return end
     print("Hat")
 
-    if (a:getTag() == PLAYER_TAG and b:getTag() == HAT_TAG) or (b:getTag() == PLAYER_TAG and a:getTag() == HAT_TAG) then
+    if a:getTag() == PLAYER_TAG or b:getTag() == PLAYER_TAG then
         local player = a:getTag() == PLAYER_TAG and a.Object or b.Object
         local hat = a:getTag() == PLAYER_TAG and b.Object or a.Object
-        local hatBody = a:getTag() == PLAYER_TAG and b or a
+        local hatBody = hat.Object
         hat:runAction(
             cc.CallFunc:create(function()
                 hat:getPhysicsBody():setEnabled(false)

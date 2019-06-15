@@ -35,7 +35,7 @@ function Player:ctor(layer)
     -- print(bit.band(GROUND_TAG, FLOOR_TAG))
 
     -- self:initKeyBoard()
-    self:initContact()
+    -- self:initContact()
 
     self:scheduleUpdateWithPriorityLua(function(dt)
         self:schedule(dt)

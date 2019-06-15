@@ -41,11 +41,11 @@ function PlayerController:onKeyPressed(keyCode, event)
     end
 
     -- other controller
-    if keyCode == cc.KeyCode.KEY_DPAD_UP then
+    if keyCode == cc.KeyCode.KEY_UP_ARROW then
         self.other:Jump()
-    elseif keyCode == cc.KeyCode.KEY_DPAD_LEFT then
+    elseif keyCode == cc.KeyCode.KEY_LEFT_ARROW then
         self.other:Left(true)
-    elseif keyCode == cc.KeyCode.KEY_DPAD_RIGHT then
+    elseif keyCode == cc.KeyCode.KEY_RIGHT_ARROW then
         self.other:Right(true)
     elseif keyCode == cc.KeyCode.KEY_1 then
         self.other:Shot()
