@@ -9,38 +9,64 @@ end
 function Hat:ctor(layer)
     self.layer = layer
 
-    self.PhysicsBody = cc.PhysicsBody:createBox(self:getContentSize(), PLAYER_MATERIAL)
+    self.PhysicsBody = cc.PhysicsBody:createBox(self:getContentSize(), HAT_MATERIAL)
     self:setPhysicsBody(self.PhysicsBody)
     self.PhysicsBody.Object = self
-    self:setPosition(cc.p(VisibleRect:center().x - 50, VisibleRect:center().y - 150))
-
+    self:setPosition(cc.p(VisibleRect:center().x - 150, VisibleRect:center().y - 150))
     self.PhysicsBody:setTag(HAT_TAG)
     self.PhysicsBody:setMass(1.0)
+
+    self.PhysicsBody:setGroup(-HAT_TAG)
+    -- self.PhysicsBody:setCategoryBitmask(HAT_TAG)
+    -- self.PhysicsBody:setContactTestBitmask(bit.bor(0xFFFFFFFF, -1))
+    -- self.PhysicsBody:setContactTestBitmask(bit.bor(0xFFFFFFFF, -HAT_TAG))
     self.PhysicsBody:setContactTestBitmask(0xFFFFFFFF)
+    -- self.PhysicsBody:setCollisionBitmask(16)
+
+    -- 碰撞相关
+    self:setLocalZOrder(0)
+    self:initContact()
 end
 
 function Hat:initContact()
-    local contactListener = cc.EventListenerPhysicsContact:create()
+    local contactListener = cc.EventListenerPhysicsContactWithGroup:create(-HAT_TAG)
     contactListener:registerScriptHandler(function(contact)
         return self:onContactBegin(contact)
     end, cc.Handler.EVENT_PHYSICS_CONTACT_BEGIN)
     local eventDispatcher = self.layer:getEventDispatcher()
-    eventDispatcher:addEventListenerWithSceneGraphPriority(contactListener, self.layer)
+
+    local node = cc.Node:create()
+    node:setLocalZOrder(2)
+    self.layer:addChild(node)
+    eventDispatcher:addEventListenerWithSceneGraphPriority(contactListener, node)
 end
 
-function Player:onContactBegin(contact)
+function Hat:onContactBegin(contact)
+    print("Hat")
     local a = contact:getShapeA():getBody()
     local b = contact:getShapeB():getBody()
     if (a:getTag() == PLAYER_TAG and b:getTag() == HAT_TAG) or (b:getTag() == PLAYER_TAG and a:getTag() == HAT_TAG) then
         local player = a:getTag() == PLAYER_TAG and a.Object or b.Object
         local hat = a:getTag() == PLAYER_TAG and b.Object or a.Object
-        hat:getPhysicsBody():setResting(true)
-        hat:removeFromParent(true)
+        local hatBody = a:getTag() == PLAYER_TAG and b or a
+        hat:runAction(
+            cc.CallFunc:create(function()
+                hat:getPhysicsBody():setEnabled(false)
+                hat:retain()
+                hat:removeFromParent(false)
 
-        player:addChild(hat)
-        table.insert(self.hats, hat)
+                player:addChild(hat)
+                local Size = player:getContentSize()
+                hat:setPosition(cc.p(Size.width/2, Size.height/2+ 100))
+
+                table.insert(player.hats, hat)
+            end)
+        )
+        return false
     end
-    print("touch")
-    return true
+
+    return false
+
 end
 
+return Hat

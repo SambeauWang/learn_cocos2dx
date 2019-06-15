@@ -19,7 +19,15 @@ function Player:ctor(layer)
     self.PhysicsBody:setVelocity(cc.p(0, 150))
     self.PhysicsBody:setTag(PLAYER_TAG)
     self.PhysicsBody:setMass(1.0)
+    self.PhysicsBody:setRotationEnable(false)
+
+    -- 碰撞相关
+    -- self:setLocalZOrder(1)
+    self.PhysicsBody:setGroup(-PLAYER_TAG)
+    -- self.PhysicsBody:setCategoryBitmask(PLAYER_TAG)
+    -- self.PhysicsBody:setContactTestBitmask(bit.bor(0xFFFFFFFF, -1))
     self.PhysicsBody:setContactTestBitmask(0xFFFFFFFF)
+    -- self.PhysicsBody:setCollisionBitmask(bit.bnot(FLOOR_TAG))
 
     self:initKeyBoard()
     self:initContact()
@@ -34,7 +42,7 @@ function Player:initKeyBoard()
     listener:registerScriptHandler(onKeyPressed, cc.Handler.EVENT_KEYBOARD_PRESSED)
 
     local eventDispatcher = self.layer:getEventDispatcher()
-    eventDispatcher:addEventListenerWithSceneGraphPriority(listener, self)
+    eventDispatcher:addEventListenerWithSceneGraphPriority(listener, self.layer)
 end
 
 function Player:onKeyPressed(keyCode, event)
@@ -50,22 +58,33 @@ function Player:onKeyPressed(keyCode, event)
     elseif keyCode == cc.KeyCode.KEY_D then
         local Dir = cc.pAdd(curVelocity, cc.p(100, 0))
         self.PhysicsBody:setVelocity(Dir)
+    elseif keyCode == cc.KeyCode.KEY_J then
+        local hat = require("Hat/Hat").create(self.layer)
+        local x, y = self:getPosition()
+        hat:setPosition(cc.p(x-150, y))
+        self.layer:addChild(hat)
+        hat.PhysicsBody:setVelocity(cc.p(-150, 150))
     end
 end
 
 function Player:initContact()
-    local contactListener = cc.EventListenerPhysicsContact:create()
+    local contactListener = cc.EventListenerPhysicsContactWithGroup:create(-PLAYER_TAG)
     contactListener:registerScriptHandler(function(contact)
         return self:onContactBegin(contact)
     end, cc.Handler.EVENT_PHYSICS_CONTACT_BEGIN)
     local eventDispatcher = self.layer:getEventDispatcher()
-    eventDispatcher:addEventListenerWithSceneGraphPriority(contactListener, self.layer)
+
+    local node = cc.Node:create()
+    node:setLocalZOrder(1)
+    self.layer:addChild(node)
+    eventDispatcher:addEventListenerWithSceneGraphPriority(contactListener, node)
 end
 
 function Player:onContactBegin(contact)
+    print("Player")
     local a = contact:getShapeA():getBody()
     local b = contact:getShapeB():getBody()
-    if (a:getTag() == 0x01 and b:getTag() == 0x02) or (b:getTag() == 0x01 and a:getTag() == 0x02) then
+    if (a:getTag() == PLAYER_TAG and b:getTag() == FLOOR_TAG) or (b:getTag() == PLAYER_TAG and a:getTag() == FLOOR_TAG) then
         local player, Floor
         if a:getTag() == 0x01 then
             player = a
@@ -77,14 +96,14 @@ function Player:onContactBegin(contact)
 
         local pos1 = player:getPosition()
         local pos2 = contact:getContactData().points[1]
+        print("Jump")
         if pos1.y < pos2.y then
             return false
         else
             return true
         end
     end
-    print("touch")
-    return true
+    return false
 end
 
 return Player

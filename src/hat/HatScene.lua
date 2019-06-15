@@ -44,7 +44,12 @@ function HatScene:createLayer()
     local layer = cc.Layer:create()
 
     local ground = cc.Node:create()
-    ground:setPhysicsBody(cc.PhysicsBody:createEdgeSegment(cc.p(VisibleRect:leftBottom().x,VisibleRect:leftBottom().y + 50),cc.p(VisibleRect:rightBottom().x,VisibleRect:rightBottom().y + 50)))
+    local groudPhysicsBody = cc.PhysicsBody:createEdgeSegment(
+        cc.p(VisibleRect:leftBottom().x,VisibleRect:leftBottom().y + 50),
+        cc.p(VisibleRect:rightBottom().x,VisibleRect:rightBottom().y + 50)
+    )
+    ground:setPhysicsBody(groudPhysicsBody)
+    -- groudPhysicsBody:setCategoryBitmask(16)
     layer:addChild(ground)
 
     self.Player = require("Hat/Player").create(layer)
@@ -53,13 +58,17 @@ function HatScene:createLayer()
     local hat = require("Hat/Hat").create(layer)
     layer:addChild(hat)
 
-    -- local p = VisibleRect:center()
-    -- local platform = makeBox(cc.p(p.x, p.y-100), cc.size(700, 20))
-    -- local platformPhysicsBody = platform:getPhysicsBody()
-    -- platformPhysicsBody:setTag(FLOOR_TAG)
-    -- platformPhysicsBody:setDynamic(false)
-    -- platformPhysicsBody:setContactTestBitmask(0xFFFFFFFF)
-    -- layer:addChild(platform)
+    local p = VisibleRect:center()
+    local platform = makeBox(cc.p(p.x, p.y-100), cc.size(700, 20))
+    local platformPhysicsBody = platform:getPhysicsBody()
+    platformPhysicsBody:setTag(FLOOR_TAG)
+    -- platformPhysicsBody:setCategoryBitmask(FLOOR_TAG)
+    platformPhysicsBody:setDynamic(false)
+    platformPhysicsBody:setContactTestBitmask(0xFFFFFFFF)
+    -- platformPhysicsBody:setCategoryBitmask(FLOOR_TAG)
+    -- platformPhysicsBody:setContactTestBitmask(bit.band(0xFFFFFFFF, -1))
+    -- platformPhysicsBody:setCollisionBitmask(PLAYER_TAG)
+    layer:addChild(platform)
 
     -- print("player:", platformPhysicsBody)
 
