@@ -34,7 +34,7 @@ function Player:ctor(layer)
     self.PhysicsBody:setCollisionBitmask(bit.bor(GROUND_TAG, FLOOR_TAG))
     -- print(bit.band(GROUND_TAG, FLOOR_TAG))
 
-    self:initKeyBoard()
+    -- self:initKeyBoard()
     self:initContact()
 
     self:scheduleUpdateWithPriorityLua(function(dt)
@@ -46,6 +46,40 @@ function Player:schedule(dt)
     local curVelocity = self.PhysicsBody:getVelocity()
     local VelocityX = math.max(math.min(curVelocity.x + self.isRunning*AcceleratedSpeedX*dt, MaxSpeedX), -MaxSpeedX)
     self.PhysicsBody:setVelocity(cc.p(VelocityX, curVelocity.y))
+end
+
+function Player:Shot()
+    -- add Hat
+    local hat = require("Hat/Hat").create(self.layer)
+    self.layer:addChild(hat)
+
+    local x, y = self:getPosition()
+    local Size = self:getContentSize()
+    local curVelocity = self.PhysicsBody:getVelocity()
+    if curVelocity.x > 0 then
+        hat:setPosition(cc.p(x+Size.width+20, y+Size.height/2))
+        local VelocityX = math.min(HatDefaultRightSpeed + curVelocity.x, HatMaxRightSpeed)
+        hat.PhysicsBody:setVelocity(cc.p(VelocityX, HatUpSpeed))
+    else
+        hat:setPosition(cc.p(x-Size.width-20, y+Size.height/2))
+        local VelocityX = math.max(-HatDefaultRightSpeed + curVelocity.x, -HatMaxRightSpeed)
+        hat.PhysicsBody:setVelocity(cc.p(VelocityX, HatUpSpeed))
+    end
+end
+
+function Player:Right(Stop)
+    self.isRunning = Stop and 1.0 or 0.0
+end
+
+function Player:Left(Stop)
+    self.isRunning = Stop and -1.0 or 0.0
+end
+
+function Player:Jump()
+    local curVelocity = self.PhysicsBody:getVelocity()
+    if curVelocity.y <= 1.0 then
+        self.PhysicsBody:setVelocity(cc.p(curVelocity.x, InitSpeedY))
+    end
 end
 
 function Player:initKeyBoard()

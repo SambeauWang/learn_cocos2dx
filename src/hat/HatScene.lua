@@ -57,8 +57,16 @@ function HatScene:createLayer()
     groudPhysicsBody:setCollisionBitmask(bit.bor(PLAYER_TAG, HAT_TAG))
     layer:addChild(ground)
 
-    self.Player = require("Hat/Player").create(layer)
-    layer:addChild(self.Player)
+    -- 创建角色
+    self.Player1 = require("Hat/Player").create(layer)
+    layer:addChild(self.Player1)
+    self.Player2 = require("Hat/Player").create(layer)
+    layer:addChild(self.Player2)
+    self.Player2:setPosition(cc.p(VisibleRect:center().x+100, VisibleRect:center().y - 130))
+
+
+    self.PlayerController = require("Hat/PlayerController").create(self.Player1, self.Player2)
+    layer:addChild(self.PlayerController)
 
     local hat = require("Hat/Hat").create(layer)
     layer:addChild(hat)
@@ -74,6 +82,7 @@ function HatScene:createLayer()
     -- platformPhysicsBody:setContactTestBitmask(bit.band(0xFFFFFFFF, -1))
     platformPhysicsBody:setCollisionBitmask(PLAYER_TAG)
     layer:addChild(platform)
+    platform:setLocalZOrder(-1)
 
     -- print("player:", platformPhysicsBody)
 
