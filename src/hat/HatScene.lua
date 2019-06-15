@@ -5,6 +5,9 @@ local DRAG_BODYS_TAG = 0x80
 local HatScene = class("HatScene", function()
     local scene = cc.Scene:createWithPhysics()
     scene:getPhysicsWorld():setDebugDrawMask(cc.PhysicsWorld.DEBUGDRAW_ALL)  -- DEBUGDRAW_ALL DEBUGDRAW_NONE
+
+    -- 重量加速度
+    scene:getPhysicsWorld():setGravity(cc.p(0, -Gravity))
     return scene
 end)
 

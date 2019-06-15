@@ -9,12 +9,11 @@ end
 function Player:ctor(layer)
     self.layer = layer
     self.isRunning = 0
+    self.hats = {}
 
     -- 设置大小
     local Size = self:getContentSize()
-    self:setScaleX(40/Size.width)
-    self:setScaleY(50/Size.height)
-    self.hats = {}
+    self:setContentSize(cc.size(40, 50))
 
     self.PhysicsBody = cc.PhysicsBody:createBox(self:getContentSize(), PLAYER_MATERIAL)
     self:setPhysicsBody(self.PhysicsBody)
@@ -45,8 +44,7 @@ end
 
 function Player:schedule(dt)
     local curVelocity = self.PhysicsBody:getVelocity()
-    local VelocityX = math.min(curVelocity.x + self.isRunning*AcceleratedSpeed*dt, 160)
-    print(VelocityX, dt, self.isRunning)
+    local VelocityX = math.max(math.min(curVelocity.x + self.isRunning*AcceleratedSpeedX*dt, MaxSpeedX), -MaxSpeedX)
     self.PhysicsBody:setVelocity(cc.p(VelocityX, curVelocity.y))
 end
 
@@ -71,23 +69,27 @@ function Player:onKeyPressed(keyCode, event)
     local curVelocity = self.PhysicsBody:getVelocity()
     if keyCode == cc.KeyCode.KEY_W then
         if curVelocity.y <= 1.0 then
-            local Dir = cc.pAdd(curVelocity, cc.p(0, 150))
-            self.PhysicsBody:setVelocity(Dir)
+            self.PhysicsBody:setVelocity(cc.p(curVelocity.x, InitSpeedY))
         end
     elseif keyCode == cc.KeyCode.KEY_A then
-        -- local Dir = cc.pAdd(curVelocity, cc.p(-100, 0))
-        -- self.PhysicsBody:setVelocity(Dir)
         self.isRunning = -1.0
     elseif keyCode == cc.KeyCode.KEY_D then
-        -- local Dir = cc.pAdd(curVelocity, cc.p(100, 0))
-        -- self.PhysicsBody:setVelocity(Dir)
         self.isRunning = 1.0
     elseif keyCode == cc.KeyCode.KEY_J then
         local hat = require("Hat/Hat").create(self.layer)
-        local x, y = self:getPosition()
-        hat:setPosition(cc.p(x-150, y))
         self.layer:addChild(hat)
-        hat.PhysicsBody:setVelocity(cc.p(-150, 150))
+
+        local x, y = self:getPosition()
+        local Size = self:getContentSize()
+        if curVelocity.x > 0 then
+            hat:setPosition(cc.p(x+Size.width+20, y+Size.height/2))
+            local VelocityX = math.min(HatDefaultRightSpeed + curVelocity.x, HatMaxRightSpeed)
+            hat.PhysicsBody:setVelocity(cc.p(VelocityX, HatUpSpeed))
+        else
+            hat:setPosition(cc.p(x-Size.width-20, y+Size.height/2))
+            local VelocityX = math.max(-HatDefaultRightSpeed + curVelocity.x, -HatMaxRightSpeed)
+            hat.PhysicsBody:setVelocity(cc.p(VelocityX, HatUpSpeed))
+        end
     end
 end
 

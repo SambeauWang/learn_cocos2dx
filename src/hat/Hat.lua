@@ -8,6 +8,7 @@ end
 
 function Hat:ctor(layer)
     self.layer = layer
+    self:setContentSize(cc.size(50, 20))
 
     self.PhysicsBody = cc.PhysicsBody:createBox(self:getContentSize(), HAT_MATERIAL)
     self:setPhysicsBody(self.PhysicsBody)
@@ -61,7 +62,7 @@ function Hat:onContactBegin(contact)
 
                 player:addChild(hat)
                 local Size = player:getContentSize()
-                hat:setPosition(cc.p(Size.width/2, Size.height/2+ 100))
+                hat:setPosition(cc.p(Size.width/2, Size.height + 10*(#player.hats + 1)))
 
                 table.insert(player.hats, hat)
             end)
