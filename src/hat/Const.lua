@@ -13,23 +13,23 @@ FLOOR_MATERIAL = cc.PhysicsMaterial(0.1, 0.5, 1.0)
 
 
 -- 人物行走的加速度
-AcceleratedSpeedX = 320
+AcceleratedSpeedX = 450
 -- 人物行走的最大速度
 MaxSpeedX = 160
 -- 人物的停止 ==> 依靠上面的摩檫力
 
 -- 人的跳跃初始速度
-InitSpeedY = 225
+InitSpeedY = 250
 
 -- 重量加速度
-Gravity = 250
+Gravity = 320
 
 -- 帽子的上升的加速度
 HatUpSpeed = 20
 
 -- 帽子横向的速度
-HatDefaultRightSpeed = 180
-HatMaxRightSpeed = 250
+HatDefaultRightSpeed = 130
+HatMaxRightSpeed = 180
 
 -- 角色的大小
 PlayerHeight = 50
@@ -45,11 +45,11 @@ ShortVacationLine = 120
 VacationLine = 240
 
 -- dealine
-DeadLineSpeed = 15
+DeadLineSpeed = 10
 
 
 -- 每次刷出的个数
-RespwanCnt = 10
+RespwanCnt = 4
 RespwanInv = 5
-RespwanTimes = 12
+RespwanTimes = 7
 
