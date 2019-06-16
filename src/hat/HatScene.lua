@@ -42,9 +42,9 @@ function HatScene:schedule(dt)
         self.ground:setPositionY(self.DeadLine)
     end
 
-    if self.CurTimes > 12 then
+    if self.CurTimes > RespwanTimes then
         self.GameOver = true
-    elseif self.PastTime > self.CurTimes * 5 then
+    elseif self.PastTime > self.CurTimes * RespwanInv then
         self.CurTimes = self.CurTimes + 1
 
         for _=1, RespwanCnt do
@@ -241,16 +241,26 @@ function HatScene:createLayer()
         Throw = "hat/action/play1/throw/throw.plist",
         Jump = "hat/action/play1/jump/jump.plist",
         Walk = "hat/action/play1/walk/walk.plist"
+    },{
+        Stand = "",
+        Throw = "",
+        Jump = "",
+        Walk = ""
     })
     layer:addChild(self.Player1)
     layer:addChild(Playe1Action)
 
     local Playe2Action = cc.Sprite:create("hat/player/2p.png")
     self.Player2 = require("Hat/Player").create(layer, "hat/player/2p.png", Player2Pos, Playe2Action, {
-        Stand = "hat/action/play2/stand/stand2.plist",
+        Stand = "hat/action/play2/stand/standa.plist",
         Throw = "hat/action/play2/throw/throw.plist",
         Jump = "hat/action/play2/jump/jump.plist",
-        Walk = "hat/action/play2/walk/walk2.plist"
+        Walk = "hat/action/play2/walk/walka.plist"
+    },{
+        Stand = "standa",
+        Throw = "",
+        Jump = "",
+        Walk = "walka"
     })
     layer:addChild(self.Player2)
     layer:addChild(Playe2Action)

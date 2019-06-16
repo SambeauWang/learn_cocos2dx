@@ -50,4 +50,6 @@ DeadLineSpeed = 15
 
 -- 每次刷出的个数
 RespwanCnt = 10
+RespwanInv = 5
+RespwanTimes = 12
 
