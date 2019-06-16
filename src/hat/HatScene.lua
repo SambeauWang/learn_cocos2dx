@@ -4,7 +4,7 @@ local DRAG_BODYS_TAG = 0x80
 
 local HatScene = class("HatScene", function()
     local scene = cc.Scene:createWithPhysics()
-    scene:getPhysicsWorld():setDebugDrawMask(cc.PhysicsWorld.DEBUGDRAW_ALL)  -- DEBUGDRAW_ALL DEBUGDRAW_NONE
+    scene:getPhysicsWorld():setDebugDrawMask(cc.PhysicsWorld.DEBUGDRAW_NONE)  -- DEBUGDRAW_ALL DEBUGDRAW_NONE
 
     -- 重量加速度
     scene:getPhysicsWorld():setGravity(cc.p(0, -Gravity))
@@ -42,9 +42,7 @@ function HatScene:schedule(dt)
         self.ground:setPositionY(self.DeadLine)
     end
 
-    if self.CurTimes > RespwanTimes then
-        self.GameOver = true
-    elseif self.PastTime > self.CurTimes * RespwanInv then
+    if self.PastTime > self.CurTimes * RespwanInv then
         self.CurTimes = self.CurTimes + 1
 
         for _=1, RespwanCnt do

@@ -100,6 +100,8 @@ function Hat:schedule(dt)
     end
 end
 
+local HatYMap = {300, 450, 600, 750, 850}
+
 function Hat:hit()
     local Cnt = 0
     local CurIndex = math.random(0, 10)
@@ -110,9 +112,10 @@ function Hat:hit()
             local Size = Label:getContentSize()
             local left = VisibleRect:left()
             local right = VisibleRect:right()
-            Label:setPosition(cc.p(right.x + Size.width/2, right.y))
+            local y = HatYMap[math.random(0, 4) + 1]
+            Label:setPosition(cc.p(right.x + Size.width/2, y))
             Label:runAction(cc.Sequence:create(
-                cc.MoveTo:create(3.0, cc.p(cc.p(left.x - Size.width/2, left.y))),
+                cc.MoveTo:create(3.0, cc.p(cc.p(left.x - Size.width/2, y))),
                 cc.CallFunc:create(function()
                     Label.isUsed = false
                 end)
