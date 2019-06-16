@@ -80,6 +80,10 @@ function Hat:schedule(dt)
         local vPosition = cc.p(v:getPosition())
         local hPosition = cc.p(self:getPosition())
         if cc.pGetDistance(vPosition, hPosition) < 45 then
+            if self.Owner then
+                self.Owner.isShoting = false
+            end
+            self.isTestHatFlying = false
             self:getPhysicsBody():setEnabled(false)
             self:retain()
             self:removeFromParent(false)

@@ -4,7 +4,7 @@ local DRAG_BODYS_TAG = 0x80
 
 local HatScene = class("HatScene", function()
     local scene = cc.Scene:createWithPhysics()
-    scene:getPhysicsWorld():setDebugDrawMask(cc.PhysicsWorld.DEBUGDRAW_NONE)  -- DEBUGDRAW_ALL DEBUGDRAW_NONE
+    scene:getPhysicsWorld():setDebugDrawMask(cc.PhysicsWorld.DEBUGDRAW_ALL)  -- DEBUGDRAW_ALL DEBUGDRAW_NONE
 
     -- 重量加速度
     scene:getPhysicsWorld():setGravity(cc.p(0, -Gravity))
@@ -42,21 +42,38 @@ function HatScene:schedule(dt)
         self.ground:setPositionY(self.DeadLine)
     end
 
-    -- if self.CurTimes > 12 then
-    --     self.GameOver = true
-    -- elseif self.PastTime > self.CurTimes * 5 then
-    --     self.CurTimes = self.CurTimes + 1
-    --     local hat = require("Hat/Hat").create(self.layer)
-    --     hat:setPosition(cc.p(HatPositions[self.CurTimes].x, HatPositions[self.CurTimes].y))
-    --     self.layer:addChild(hat)
-    -- end
-
-    if self.CurTimes > 4 then
+    if self.CurTimes > 12 then
         self.GameOver = true
-    elseif self.PastTime > self.RandomTime * 15 then
-        self.RandomTime = self.RandomTime + 1
-        self:randomEvent()
+    elseif self.PastTime > self.CurTimes * 5 then
+        self.CurTimes = self.CurTimes + 1
+
+        for _=1, RespwanCnt do
+            local hat = require("Hat/Hat").create(self.layer)
+            local p = self:generatePos()
+            hat:setPosition(cc.p(p.x, p.y))
+            self.layer:addChild(hat)
+        end
     end
+
+    -- if self.CurTimes > 4 then
+    --     self.GameOver = true
+    -- elseif self.PastTime > self.RandomTime * 15 then
+    --     self.RandomTime = self.RandomTime + 1
+    --     self:randomEvent()
+    -- end
+end
+
+function HatScene:generatePos()
+    local Cnt = 0
+    local p
+    while Cnt < 50 do
+        p = HatPositions[math.random(0, 99)+1]
+        if p.y > self.DeadLine then
+            return p
+        end
+        Cnt = Cnt + 1
+    end
+    return p
 end
 
 function HatScene:createGround(leftBottom, RightTop)
@@ -206,23 +223,37 @@ function HatScene:createLayer()
     layer:addChild(self.ground)
 
     local wall1 = self:createGround(
-        cc.p(VisibleRect:leftBottom().x - 2, VisibleRect:leftBottom().y),
-        cc.p(VisibleRect:leftBottom().x - 2, VisibleRect:leftTop().y)
+        cc.p(VisibleRect:leftBottom().x - 1, VisibleRect:leftBottom().y),
+        cc.p(VisibleRect:leftBottom().x - 1, VisibleRect:leftTop().y)
     )
     layer:addChild(wall1)
 
     local wall2 = self:createGround(
-        cc.p(VisibleRect:rightBottom().x + 2, VisibleRect:rightBottom().y),
-        cc.p(VisibleRect:rightBottom().x + 2, VisibleRect:rightTop().y)
+        cc.p(VisibleRect:rightBottom().x + 1, VisibleRect:rightBottom().y),
+        cc.p(VisibleRect:rightBottom().x + 1, VisibleRect:rightTop().y)
     )
     layer:addChild(wall2)
 
     -- 创建角色
-    self.Player1 = require("Hat/Player").create(layer, "hat/player/1p.png", Player1Pos)
+    local Playe1Action = cc.Sprite:create("hat/player/1p.png")
+    self.Player1 = require("Hat/Player").create(layer, "hat/player/1p.png", Player1Pos, Playe1Action, {
+        Stand = "hat/action/play1/stand/stand.plist",
+        Throw = "hat/action/play1/throw/throw.plist",
+        Jump = "hat/action/play1/jump/jump.plist",
+        Walk = "hat/action/play1/walk/walk.plist"
+    })
     layer:addChild(self.Player1)
+    layer:addChild(Playe1Action)
 
-    self.Player2 = require("Hat/Player").create(layer, "hat/player/2p.png", Player2Pos)
+    local Playe2Action = cc.Sprite:create("hat/player/2p.png")
+    self.Player2 = require("Hat/Player").create(layer, "hat/player/2p.png", Player2Pos, Playe2Action, {
+        Stand = "hat/action/play2/stand/stand2.plist",
+        Throw = "hat/action/play2/throw/throw.plist",
+        Jump = "hat/action/play2/jump/jump.plist",
+        Walk = "hat/action/play2/walk/walk2.plist"
+    })
     layer:addChild(self.Player2)
+    layer:addChild(Playe2Action)
     self.players = {self.Player1, self.Player2}
 
     self.PlayerController = require("Hat/PlayerController").create(self.Player1, self.Player2)

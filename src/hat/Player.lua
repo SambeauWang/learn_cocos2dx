@@ -1,12 +1,12 @@
-local Player = class("Player", function(layer, res, pos)
+local Player = class("Player", function(layer, res, pos, UActionSelf, Actions)
     return cc.Sprite:create(res)
 end)
 
-function Player.create(layer, res, pos)
-    return Player.new(layer, res, pos)
+function Player.create(layer, res, pos, UActionSelf, Actions)
+    return Player.new(layer, res, pos, UActionSelf, Actions)
 end
 
-function Player:ctor(layer, res, pos)
+function Player:ctor(layer, res, pos, UActionSelf, Actions)
     self.layer = layer
     self.isRunning = 0
     self.JumpCnt = 0
@@ -31,6 +31,10 @@ function Player:ctor(layer, res, pos)
     self.PhysicsBody:setRotationEnable(false)
     self.PhysicsBody.Object = self
 
+    -- 创建动画自身
+    self.UActionSelf = UActionSelf
+    UActionSelf:setVisible(true)
+
     -- 碰撞相关
     -- self:setLocalZOrder(1)
     -- self.PhysicsBody:setGroup(-PLAYER_TAG)
@@ -43,6 +47,20 @@ function Player:ctor(layer, res, pos)
     -- self:initKeyBoard()
     -- self:initContact()
 
+    -- 动作相关
+    self.isAction = 1 -- 1 Stand 2 Throw 3 Jump 4 Walk
+    self.StandSpriteFrame = cc.SpriteFrameCache:getInstance()
+    self.StandSpriteFrame:addSpriteFrames(Actions.Stand)
+
+    self.ThrowSpriteFrame = cc.SpriteFrameCache:getInstance()
+    self.ThrowSpriteFrame:addSpriteFrames(Actions.Throw)
+
+    self.JumpSpriteFrame = cc.SpriteFrameCache:getInstance()
+    self.JumpSpriteFrame:addSpriteFrames(Actions.Jump)
+
+    self.WalkSpriteFrame = cc.SpriteFrameCache:getInstance()
+    self.WalkSpriteFrame:addSpriteFrames(Actions.Walk)
+
     self:scheduleUpdateWithPriorityLua(function(dt)
         self:schedule(dt)
     end, 0)
@@ -53,24 +71,29 @@ function Player:schedule(dt)
     local VelocityX = math.max(math.min(curVelocity.x + self.isRunning*AcceleratedSpeedX*dt, MaxSpeedX), -MaxSpeedX)
     self.PhysicsBody:setVelocity(cc.p(VelocityX, curVelocity.y))
 
-    local _, y = self:getPosition()
+    local x, y = self:getPosition()
     -- TODO 都加25的偏移
     if self.layer.uParent.DeadLine + self:getContentSize().height + 25 >= y then
         self.JumpCnt = 0
     end
 
-    -- if self.isOnGround then
-    --     print("test")
-    --     self.isOnGround = false
-    --     local curVelocity = self.PhysicsBody:getVelocity()
-    --     local dir = curVelocity.x > 0 and -1.0 or 1.0
-    --     local VelocityX = curVelocity.x + dir*AcceleratedSpeedX*dt
-    --     if VelocityX > 0.2 and VelocityX < -0.2 then
-    --         self.PhysicsBody:setVelocity(cc.p(VelocityX, curVelocity.y))
-    --     else
-    --         self.PhysicsBody:setVelocity(cc.p(0.0, curVelocity.y))
-    --     end
-    -- end
+    self.UActionSelf:setPosition(cc.p(x, y))
+
+    if self.JumpCnt <= 0 then
+        if VelocityX > -0.2 and VelocityX < 0.2 then
+            if self.isAction ~= 1 then
+                self.isAction = 1
+                self:stopAllActions()
+                self:UStartRepeatAction(self.StandSpriteFrame, 4)
+            end
+        else
+            if self.isAction ~= 4 then
+                self.isAction = 4
+                self:stopAllActions()
+                self:UStartRepeatAction(self.WalkSpriteFrame, 4)
+            end
+        end
+    end
 end
 
 function Player:Shot()
@@ -92,9 +115,13 @@ function Player:Shot()
     local Size = self:getContentSize()
     local curVelocity = self.PhysicsBody:getVelocity()
 
-    hat:setPosition(cc.p(x+(Size.width+20)*self.Forward, y+Size.height/2))
+    hat:setPosition(cc.p(x, y+Size.height))
     local VelocityX = math.max(HatDefaultRightSpeed*self.Forward + curVelocity.x, HatMaxRightSpeed*self.Forward)
     hat.PhysicsBody:setVelocity(cc.p(VelocityX, HatUpSpeed))
+
+    self.isAction = 2
+    self:stopAllActions()
+    self:UStartAction(self.ThrowSpriteFrame, 3)
 end
 
 function Player:ClearStatus()
@@ -118,17 +145,19 @@ end
 function Player:Jump()
     local curVelocity = self.PhysicsBody:getVelocity()
     if self.JumpCnt < 2 then
+        self.isAction = 3
+        self:stopAllActions()
+        self:UStartAction(self.JumpSpriteFrame, 4)
+
         self.JumpCnt = self.JumpCnt + 1
         self.PhysicsBody:setVelocity(cc.p(curVelocity.x, InitSpeedY))
     end
 end
 
-function Player:createAction()
-    --///////////////动画开始//////////////////////
+function Player:UStartAction(spriteFrame, num)
     local animation = cc.Animation:create()
-    for i=1,4 do
+    for i=1, num do
         local frameName = string.format("%d.png",i)
-        cclog("frameName = %s",frameName)
         local spriteFrame = spriteFrame:getSpriteFrame(frameName)
         animation:addSpriteFrame(spriteFrame)
     end
@@ -137,7 +166,22 @@ function Player:createAction()
     animation:setRestoreOriginalFrame(true)    --动画执行后还原初始状态
 
     local action = cc.Animate:create(animation)
-    sprite:runAction(cc.RepeatForever:create(action))
+    self.UActionSelf:runAction(action)
+end
+
+function Player:UStartRepeatAction(spriteFrame, num)
+    local animation = cc.Animation:create()
+    for i=1, num do
+        local frameName = string.format("%d.png",i)
+        local spriteFrame = spriteFrame:getSpriteFrame(frameName)
+        animation:addSpriteFrame(spriteFrame)
+    end
+
+    animation:setDelayPerUnit(0.15)           --设置两个帧播放时间
+    animation:setRestoreOriginalFrame(true)    --动画执行后还原初始状态
+
+    local action = cc.Animate:create(animation)
+    self.UActionSelf:runAction(cc.RepeatForever:create(action))
 end
 
 function Player:initContact()
