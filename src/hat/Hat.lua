@@ -54,6 +54,11 @@ function Hat:ClearStatus()
     end
 end
 
+function Hat:DestroyHat()
+    self:getPhysicsBody():setEnabled(false)
+    self:removeFromParent(false)
+end
+
 function Hat:initContact()
     local contactListener = cc.EventListenerPhysicsContact:create()
     contactListener:registerScriptHandler(function(contact)

@@ -4,7 +4,7 @@ local DRAG_BODYS_TAG = 0x80
 
 local HatScene = class("HatScene", function()
     local scene = cc.Scene:createWithPhysics()
-    scene:getPhysicsWorld():setDebugDrawMask(cc.PhysicsWorld.DEBUGDRAW_ALL)  -- DEBUGDRAW_ALL DEBUGDRAW_NONE
+    scene:getPhysicsWorld():setDebugDrawMask(cc.PhysicsWorld.DEBUGDRAW_NONE)  -- DEBUGDRAW_ALL DEBUGDRAW_NONE
 
     -- 重量加速度
     scene:getPhysicsWorld():setGravity(cc.p(0, -Gravity))
@@ -37,7 +37,8 @@ function HatScene:schedule(dt)
     end
 
     if self.PastTime > 10 then
-        self.DeadLine = VisibleRect:leftBottom().y + 50 + 15*(self.PastTime - 10)
+        -- self.DeadLineEx = self.DeadLineSpeed * dt + self.DeadLineEx
+        self.DeadLine = VisibleRect:leftBottom().y + 50 + DeadLineSpeed*(self.PastTime - 10) + self.DeadLineEx
         self.ground:setPositionY(self.DeadLine)
     end
 
@@ -49,6 +50,13 @@ function HatScene:schedule(dt)
     --     hat:setPosition(cc.p(HatPositions[self.CurTimes].x, HatPositions[self.CurTimes].y))
     --     self.layer:addChild(hat)
     -- end
+
+    if self.CurTimes > 4 then
+        self.GameOver = true
+    elseif self.PastTime > self.RandomTime * 15 then
+        self.RandomTime = self.RandomTime + 1
+        self:randomEvent()
+    end
 end
 
 function HatScene:createGround(leftBottom, RightTop)
@@ -72,6 +80,102 @@ function HatScene:initTextList(layer)
     end
 end
 
+function HatScene:randomEvent()
+    local Type = math.random(0, 4)
+
+    -- 小长假
+    Type = 4
+    if Type == 1 then
+        for _, v in ipairs(self.players) do
+            local x, y = v:getPosition()
+            if y-100-3 < VisibleRect:leftBottom().y + 50 + DeadLineSpeed*(self.PastTime - 10) then
+                v:setPosition(cc.p(x, y+ShortVacationLine))
+            end
+        end
+        self.DeadLineEx = self.DeadLineEx + ShortVacationLine
+
+        self.HintLabel:setString("short vacation!!!")
+    elseif Type == 2 then
+        for _, v in ipairs(self.players) do
+            local x, y = v:getPosition()
+            if y-100-3 < VisibleRect:leftBottom().y + 50 + DeadLineSpeed*(self.PastTime - 10) then
+                v:setPosition(cc.p(x, y+VacationLine))
+            end
+        end
+        self.DeadLineEx = self.DeadLineEx + VacationLine
+
+        self.HintLabel:setString("Long vacation!!!")
+    elseif Type == 3 then
+        self.Maskbg:runAction(cc.Sequence:create(
+            cc.Hide:create(),
+            cc.DelayTime:create(0.5),
+            cc.Show:create(),
+            cc.DelayTime:create(0.5),
+
+            cc.Hide:create(),
+            cc.DelayTime:create(0.5),
+            cc.Show:create(),
+            cc.DelayTime:create(0.5),
+
+            cc.Hide:create(),
+            cc.DelayTime:create(0.5),
+            cc.Show:create(),
+            cc.DelayTime:create(0.5),
+
+            cc.Hide:create(),
+            cc.DelayTime:create(0.5),
+            cc.Show:create(),
+            cc.DelayTime:create(0.5),
+
+            cc.Hide:create(),
+            cc.DelayTime:create(0.5),
+            cc.Show:create(),
+            cc.DelayTime:create(0.5),
+
+            cc.Hide:create(),
+            cc.DelayTime:create(0.5),
+            cc.Show:create(),
+            cc.DelayTime:create(0.5),
+            cc.Hide:create()
+        ))
+
+        self.HintLabel:setString("停电了!!!")
+    elseif Type == 4 then
+        local removeHat = function(hats)
+            local nHats = #hats
+            if nHats <= 0 then return end
+            local hat = hats[nHats]
+            table.remove(hats, nHats)
+            hat:DestroyHat()
+        end
+
+        performWithDelay(self.layer, function()
+            print("remove Hat 2.0")
+            for _, v in ipairs(self.players) do
+                removeHat(v.hats)
+                removeHat(v.hats)
+            end
+        end, 2.0)
+
+        performWithDelay(self.layer, function()
+            print("remove Hat 2.0")
+            for _, v in ipairs(self.players) do
+                removeHat(v.hats)
+                removeHat(v.hats)
+            end
+        end, 4.0)
+
+        self.HintLabel:setString("996!!!")
+    end
+
+    self.HintLabel:runAction(cc.Sequence:create(
+        cc.DelayTime:create(5.0),
+        cc.CallFunc:create(function()
+            self.HintLabel:setString("")
+        end)
+    ))
+end
+
 function HatScene:createLayer()
     local layer = cc.Layer:create()
 
@@ -79,6 +183,12 @@ function HatScene:createLayer()
     bg:setPosition(VisibleRect:center())
     bg:setLocalZOrder(-2)
     layer:addChild(bg)
+
+    self.Maskbg = cc.Sprite:create("hat/scene/bg.png")
+    self.Maskbg:setPosition(VisibleRect:center())
+    self.Maskbg:setLocalZOrder(5)
+    self.Maskbg:setVisible(false)
+    layer:addChild(self.Maskbg)
 
     local Deadline1 = cc.Sprite:create("hat/scene/deadline.png")
     Deadline1:setRotation(180)
@@ -148,8 +258,13 @@ function HatScene:createLayer()
     self.WinLabel = cc.Label:createWithTTF("", "fonts/arial.ttf", 32)
     layer:addChild(self.WinLabel, 1)
     self.WinLabel:setAnchorPoint(cc.p(0.5, 0.5))
-    self.WinLabel:setPosition(cc.p(VisibleRect:center().x, VisibleRect:top().y-50))
+    self.WinLabel:setPosition(cc.p(VisibleRect:center().x, VisibleRect:top().y-38))
 
+
+    self.HintLabel = cc.Label:createWithTTF("", "fonts/STLITI.ttf", 32)
+    layer:addChild(self.HintLabel, 1)
+    self.HintLabel:setAnchorPoint(cc.p(0.5, 0.5))
+    self.HintLabel:setPosition(cc.p(VisibleRect:center().x, VisibleRect:top().y-53))
 
     -- 初始化滚动的文本
     self:initTextList(layer)
@@ -158,6 +273,9 @@ function HatScene:createLayer()
     self.GameOver = false
     self.DeadLine = VisibleRect:leftBottom().y + 50
     self.CurTimes = 1
+    self.RandomTime = 1
+    self.DeadLineSpeed = 0.0
+    self.DeadLineEx = 0.0
 
     layer:scheduleUpdateWithPriorityLua(function(dt)
         self:schedule(dt)

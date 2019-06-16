@@ -38,3 +38,12 @@ PlayerWidth = 40
 -- 角色1的大小
 Player1Pos = cc.p(100, 120)
 Player2Pos = cc.p(400, 120)
+
+-- 小假期
+ShortVacationLine = 50
+-- 大假期
+VacationLine = 100
+
+-- dealine
+DeadLineSpeed = 15
+
