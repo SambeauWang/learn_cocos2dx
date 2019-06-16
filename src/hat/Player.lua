@@ -1,12 +1,12 @@
-local Player = class("Player", function(layer, res, pos, UActionSelf, Actions)
+local Player = class("Player", function(layer, res, pos, UActionSelf, Actions, ActionsName)
     return cc.Sprite:create(res)
 end)
 
-function Player.create(layer, res, pos, UActionSelf, Actions)
-    return Player.new(layer, res, pos, UActionSelf, Actions)
+function Player.create(layer, res, pos, UActionSelf, Actions, ActionsName)
+    return Player.new(layer, res, pos, UActionSelf, Actions, ActionsName)
 end
 
-function Player:ctor(layer, res, pos, UActionSelf, Actions)
+function Player:ctor(layer, res, pos, UActionSelf, Actions, ActionsName)
     self.layer = layer
     self.isRunning = 0
     self.JumpCnt = 0
@@ -61,6 +61,8 @@ function Player:ctor(layer, res, pos, UActionSelf, Actions)
     self.WalkSpriteFrame = cc.SpriteFrameCache:getInstance()
     self.WalkSpriteFrame:addSpriteFrames(Actions.Walk)
 
+    self.ActionsName = ActionsName
+
     self:scheduleUpdateWithPriorityLua(function(dt)
         self:schedule(dt)
     end, 0)
@@ -84,13 +86,13 @@ function Player:schedule(dt)
             if self.isAction ~= 1 then
                 self.isAction = 1
                 self:stopAllActions()
-                self:UStartRepeatAction(self.StandSpriteFrame, 4)
+                self:UStartRepeatAction(self.StandSpriteFrame, 4, self.ActionsName.Stand)
             end
         else
             if self.isAction ~= 4 then
                 self.isAction = 4
                 self:stopAllActions()
-                self:UStartRepeatAction(self.WalkSpriteFrame, 4)
+                self:UStartRepeatAction(self.WalkSpriteFrame, 4, self.ActionsName.Walk)
             end
         end
     end
@@ -121,7 +123,7 @@ function Player:Shot()
 
     self.isAction = 2
     self:stopAllActions()
-    self:UStartAction(self.ThrowSpriteFrame, 3)
+    self:UStartAction(self.ThrowSpriteFrame, 3, self.ActionsName.Throw)
 end
 
 function Player:ClearStatus()
@@ -147,17 +149,17 @@ function Player:Jump()
     if self.JumpCnt < 2 then
         self.isAction = 3
         self:stopAllActions()
-        self:UStartAction(self.JumpSpriteFrame, 4)
+        self:UStartAction(self.JumpSpriteFrame, 4, self.ActionsName.Jump)
 
         self.JumpCnt = self.JumpCnt + 1
         self.PhysicsBody:setVelocity(cc.p(curVelocity.x, InitSpeedY))
     end
 end
 
-function Player:UStartAction(spriteFrame, num)
+function Player:UStartAction(spriteFrame, num, ActionName)
     local animation = cc.Animation:create()
     for i=1, num do
-        local frameName = string.format("%d.png",i)
+        local frameName = string.format("%s%d.png", ActionName, i)
         local spriteFrame = spriteFrame:getSpriteFrame(frameName)
         animation:addSpriteFrame(spriteFrame)
     end
@@ -169,10 +171,10 @@ function Player:UStartAction(spriteFrame, num)
     self.UActionSelf:runAction(action)
 end
 
-function Player:UStartRepeatAction(spriteFrame, num)
+function Player:UStartRepeatAction(spriteFrame, num, ActionName)
     local animation = cc.Animation:create()
     for i=1, num do
-        local frameName = string.format("%d.png",i)
+        local frameName = string.format("%s%d.png", ActionName, i)
         local spriteFrame = spriteFrame:getSpriteFrame(frameName)
         animation:addSpriteFrame(spriteFrame)
     end

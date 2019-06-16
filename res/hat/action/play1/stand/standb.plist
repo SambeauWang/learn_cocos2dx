@@ -4,7 +4,7 @@
     <dict>
         <key>frames</key>
         <dict>
-            <key>1.png</key>
+            <key>standb1.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -19,7 +19,7 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>2.png</key>
+            <key>standb2.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -34,7 +34,7 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>3.png</key>
+            <key>standb3.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -49,7 +49,7 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>4.png</key>
+            <key>standb4.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -74,13 +74,13 @@
             <key>premultiplyAlpha</key>
             <false/>
             <key>realTextureFileName</key>
-            <string>stand.png</string>
+            <string>standb.png</string>
             <key>size</key>
             <string>{160,58}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:ce0b886ed019d941468936bef8cb009f:feba5d1ac18da2ed34c2903b6bce90ca:1e674ececfeb72fdfdcf621c36ee6855$</string>
+            <string>$TexturePacker:SmartUpdate:558583fd08c81ee60485fd6015b51ff6:24fd70e23709ce6cac19d7dff6df11b7:58247a867ce0a7285f5b9cb92fcb64a9$</string>
             <key>textureFileName</key>
-            <string>stand.png</string>
+            <string>standb.png</string>
         </dict>
     </dict>
 </plist>

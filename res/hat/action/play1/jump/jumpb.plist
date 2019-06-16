@@ -4,7 +4,7 @@
     <dict>
         <key>frames</key>
         <dict>
-            <key>1.png</key>
+            <key>jumpb1.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -19,7 +19,7 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>2.png</key>
+            <key>jumpb2.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -34,7 +34,7 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>3.png</key>
+            <key>jumpb3.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -49,6 +49,21 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
+            <key>jumpb4.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{54,58}</string>
+                <key>spriteSourceSize</key>
+                <string>{54,58}</string>
+                <key>textureRect</key>
+                <string>{{162,0},{54,58}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
         </dict>
         <key>metadata</key>
         <dict>
@@ -59,13 +74,13 @@
             <key>premultiplyAlpha</key>
             <false/>
             <key>realTextureFileName</key>
-            <string>throw.png</string>
+            <string>jumpb.png</string>
             <key>size</key>
-            <string>{162,58}</string>
+            <string>{216,58}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:a9538fd1b7600fbf4b1901dac4787e7f:877050f93c3275a959937f75b5de167c:84b8becc3140ef72f8166de631cf1fbe$</string>
+            <string>$TexturePacker:SmartUpdate:c74e1a93835cc726e5ed3ad51c94c7c1:18cc809ce0e168f396ba218da9f9c6f5:b48467b482d2ed739043147b505e5f6a$</string>
             <key>textureFileName</key>
-            <string>throw.png</string>
+            <string>jumpb.png</string>
         </dict>
     </dict>
 </plist>

@@ -4,63 +4,63 @@
     <dict>
         <key>frames</key>
         <dict>
-            <key>1.png</key>
+            <key>standa1.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{54,58}</string>
+                <string>{40,58}</string>
                 <key>spriteSourceSize</key>
-                <string>{54,58}</string>
+                <string>{40,58}</string>
                 <key>textureRect</key>
-                <string>{{0,0},{54,58}}</string>
+                <string>{{0,0},{40,58}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>2.png</key>
+            <key>standa2.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{54,58}</string>
+                <string>{40,58}</string>
                 <key>spriteSourceSize</key>
-                <string>{54,58}</string>
+                <string>{40,58}</string>
                 <key>textureRect</key>
-                <string>{{54,0},{54,58}}</string>
+                <string>{{40,0},{40,58}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>3.png</key>
+            <key>standa3.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{54,58}</string>
+                <string>{40,58}</string>
                 <key>spriteSourceSize</key>
-                <string>{54,58}</string>
+                <string>{40,58}</string>
                 <key>textureRect</key>
-                <string>{{108,0},{54,58}}</string>
+                <string>{{80,0},{40,58}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>4.png</key>
+            <key>standa4.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{54,58}</string>
+                <string>{40,58}</string>
                 <key>spriteSourceSize</key>
-                <string>{54,58}</string>
+                <string>{40,58}</string>
                 <key>textureRect</key>
-                <string>{{162,0},{54,58}}</string>
+                <string>{{120,0},{40,58}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -74,13 +74,13 @@
             <key>premultiplyAlpha</key>
             <false/>
             <key>realTextureFileName</key>
-            <string>walk.png</string>
+            <string>standa.png</string>
             <key>size</key>
-            <string>{216,58}</string>
+            <string>{160,58}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:aae2f6541ec7bee443b229be57b96be8:537ed62a3031d0855a67aac509bf6376:ee5a53230c137d81fadb9a88e71d34b6$</string>
+            <string>$TexturePacker:SmartUpdate:c391f297942e38747f66b8004ea4e791:feba5d1ac18da2ed34c2903b6bce90ca:95f391955fd192a93e733eb55da1be17$</string>
             <key>textureFileName</key>
-            <string>walk.png</string>
+            <string>standa.png</string>
         </dict>
     </dict>
 </plist>

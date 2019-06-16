@@ -4,7 +4,7 @@
     <dict>
         <key>frames</key>
         <dict>
-            <key>1.png</key>
+            <key>walka1.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -19,7 +19,7 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>2.png</key>
+            <key>walka2.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -34,7 +34,7 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>3.png</key>
+            <key>walka3.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -49,6 +49,21 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
+            <key>walka4.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{54,58}</string>
+                <key>spriteSourceSize</key>
+                <string>{54,58}</string>
+                <key>textureRect</key>
+                <string>{{162,0},{54,58}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
         </dict>
         <key>metadata</key>
         <dict>
@@ -59,13 +74,13 @@
             <key>premultiplyAlpha</key>
             <false/>
             <key>realTextureFileName</key>
-            <string>thrpw.png</string>
+            <string>walka.png</string>
             <key>size</key>
-            <string>{162,58}</string>
+            <string>{216,58}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:dec4ab1a025854349cf30501dcea723c:e6e3c4a394910814e364cfeaffd04ffd:ea05090180e12ebddde2e5097decd886$</string>
+            <string>$TexturePacker:SmartUpdate:95db94b077cd3e8bf062c52d6d370ccf:537ed62a3031d0855a67aac509bf6376:817efefbc9664f4e15ce13bb04adbf51$</string>
             <key>textureFileName</key>
-            <string>thrpw.png</string>
+            <string>walka.png</string>
         </dict>
     </dict>
 </plist>

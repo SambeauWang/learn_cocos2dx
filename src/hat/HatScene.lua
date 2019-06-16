@@ -237,15 +237,15 @@ function HatScene:createLayer()
     -- 创建角色
     local Playe1Action = cc.Sprite:create("hat/player/1p.png")
     self.Player1 = require("Hat/Player").create(layer, "hat/player/1p.png", Player1Pos, Playe1Action, {
-        Stand = "hat/action/play1/stand/stand.plist",
-        Throw = "hat/action/play1/throw/throw.plist",
-        Jump = "hat/action/play1/jump/jump.plist",
-        Walk = "hat/action/play1/walk/walk.plist"
+        Stand = "hat/action/play1/stand/standb.plist",
+        Throw = "hat/action/play1/throw/throwb.plist",
+        Jump = "hat/action/play1/jump/jumpb.plist",
+        Walk = "hat/action/play1/walk/walkb.plist"
     },{
-        Stand = "",
-        Throw = "",
-        Jump = "",
-        Walk = ""
+        Stand = "standb",
+        Throw = "throwb",
+        Jump = "jumpb",
+        Walk = "walkb"
     })
     layer:addChild(self.Player1)
     layer:addChild(Playe1Action)
@@ -253,13 +253,13 @@ function HatScene:createLayer()
     local Playe2Action = cc.Sprite:create("hat/player/2p.png")
     self.Player2 = require("Hat/Player").create(layer, "hat/player/2p.png", Player2Pos, Playe2Action, {
         Stand = "hat/action/play2/stand/standa.plist",
-        Throw = "hat/action/play2/throw/throw.plist",
-        Jump = "hat/action/play2/jump/jump.plist",
+        Throw = "hat/action/play2/throw/throwa.plist",
+        Jump = "hat/action/play2/jump/jumpa.plist",
         Walk = "hat/action/play2/walk/walka.plist"
     },{
         Stand = "standa",
-        Throw = "",
-        Jump = "",
+        Throw = "throw",
+        Jump = "jumpa",
         Walk = "walka"
     })
     layer:addChild(self.Player2)

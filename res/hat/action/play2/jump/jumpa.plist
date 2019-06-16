@@ -4,7 +4,7 @@
     <dict>
         <key>frames</key>
         <dict>
-            <key>1.png</key>
+            <key>jumpa1.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -19,7 +19,7 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>2.png</key>
+            <key>jumpa2.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -34,7 +34,7 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>3.png</key>
+            <key>jumpa3.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -49,7 +49,7 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>4.png</key>
+            <key>jumpa4.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -74,13 +74,13 @@
             <key>premultiplyAlpha</key>
             <false/>
             <key>realTextureFileName</key>
-            <string>walk.png</string>
+            <string>jumpa.png</string>
             <key>size</key>
             <string>{216,58}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:f27f64840975b027124b7502527f60d0:2c740cd1f04c08d5be2adc5b9c082b7f:ee5a53230c137d81fadb9a88e71d34b6$</string>
+            <string>$TexturePacker:SmartUpdate:d5a94757998f12a8546f1a90a05ca8b6:2cef44f39457d3d06348222d205555fd:6c42975b8ade7865c1ef8198c3ea1f48$</string>
             <key>textureFileName</key>
-            <string>walk.png</string>
+            <string>jumpa.png</string>
         </dict>
     </dict>
 </plist>
