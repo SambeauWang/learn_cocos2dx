@@ -84,7 +84,6 @@ function HatScene:randomEvent()
     local Type = math.random(0, 4)
 
     -- 小长假
-    Type = 4
     if Type == 1 then
         for _, v in ipairs(self.players) do
             local x, y = v:getPosition()
