@@ -87,7 +87,8 @@ function HatScene:randomEvent()
     if Type == 1 then
         for _, v in ipairs(self.players) do
             local x, y = v:getPosition()
-            if y-100-3 < VisibleRect:leftBottom().y + 50 + DeadLineSpeed*(self.PastTime - 10) then
+            local p = self.Deadline2:convertToWorldSpace(cc.p(0.0, 0.0))
+            if y-80 < p.y then
                 v:setPosition(cc.p(x, y+ShortVacationLine))
             end
         end
@@ -97,7 +98,8 @@ function HatScene:randomEvent()
     elseif Type == 2 then
         for _, v in ipairs(self.players) do
             local x, y = v:getPosition()
-            if y-100-3 < VisibleRect:leftBottom().y + 50 + DeadLineSpeed*(self.PastTime - 10) then
+            local p = self.Deadline2:convertToWorldSpace(cc.p(0.0, 0.0))
+            if y-80 < p.y then
                 v:setPosition(cc.p(x, y+VacationLine))
             end
         end
@@ -189,18 +191,18 @@ function HatScene:createLayer()
     self.Maskbg:setVisible(false)
     layer:addChild(self.Maskbg)
 
-    local Deadline1 = cc.Sprite:create("hat/scene/deadline.png")
-    Deadline1:setRotation(180)
-    Deadline1:setPosition(cc.p(VisibleRect:center().x, VisibleRect:top().y-50))
-    layer:addChild(Deadline1)
+    self.Deadline1 = cc.Sprite:create("hat/scene/deadline.png")
+    self.Deadline1:setRotation(180)
+    self.Deadline1:setPosition(cc.p(VisibleRect:center().x, VisibleRect:top().y-50))
+    layer:addChild(self.Deadline1)
 
     self.ground = self:createGround(
         cc.p(VisibleRect:leftBottom().x,VisibleRect:leftBottom().y + 50),
         cc.p(VisibleRect:rightBottom().x,VisibleRect:rightBottom().y + 50)
     )
-    local Deadline2 = cc.Sprite:create("hat/scene/deadline.png")
-    Deadline2:setPosition(cc.p(VisibleRect:center().x, 30))
-    self.ground:addChild(Deadline2)
+    self.Deadline2 = cc.Sprite:create("hat/scene/deadline.png")
+    self.Deadline2:setPosition(cc.p(VisibleRect:center().x, 30))
+    self.ground:addChild(self.Deadline2)
     layer:addChild(self.ground)
 
     local wall1 = self:createGround(
@@ -216,12 +218,11 @@ function HatScene:createLayer()
     layer:addChild(wall2)
 
     -- 创建角色
-    self.Player1 = require("Hat/Player").create(layer, "hat/player/1p.png")
+    self.Player1 = require("Hat/Player").create(layer, "hat/player/1p.png", Player1Pos)
     layer:addChild(self.Player1)
-    self.Player1:setPosition(Player1Pos)
-    self.Player2 = require("Hat/Player").create(layer, "hat/player/2p.png")
+
+    self.Player2 = require("Hat/Player").create(layer, "hat/player/2p.png", Player2Pos)
     layer:addChild(self.Player2)
-    self.Player2:setPosition(Player2Pos)
     self.players = {self.Player1, self.Player2}
 
     self.PlayerController = require("Hat/PlayerController").create(self.Player1, self.Player2)

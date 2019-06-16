@@ -21,13 +21,13 @@ function AnimateScene:createLayer()
     local layer = cc.Layer:create()
 
     local spriteFrame  = cc.SpriteFrameCache:getInstance()
-    spriteFrame:addSpriteFrames("ch83/run.plist")
+    spriteFrame:addSpriteFrames("hat/action/jump/jump.plist")
 
     local bg = cc.Sprite:create("ch83/background.png")
     bg:setPosition(cc.p(size.width/2, size.height/2))
     layer:addChild(bg)
 
-    local sprite = cc.Sprite:create("ch83/h1.png")
+    local sprite = cc.Sprite:create("hat/action/jump/1.png")
     sprite:setPosition(cc.p(size.width/2, size.height/2))
     layer:addChild(sprite)
 
@@ -66,7 +66,7 @@ function AnimateScene:createLayer()
             --///////////////动画开始//////////////////////
             local animation = cc.Animation:create()
             for i=1,4 do
-                local frameName = string.format("h%d.png",i)
+                local frameName = string.format("%d.png",i)
                 cclog("frameName = %s",frameName)
                 local spriteFrame = spriteFrame:getSpriteFrame(frameName)
                 animation:addSpriteFrame(spriteFrame)

@@ -43,6 +43,9 @@ function main()
     director:getOpenGLView():setDesignResolutionSize(500, 1080, 0)
     director:getOpenGLView():setFrameSize(500, 1080)
 
+    -- director:getOpenGLView():setDesignResolutionSize(960, 640, 0)
+    -- director:getOpenGLView():setFrameSize(960, 640)
+
     director:setDisplayStats(true)
     director:setAnimationInterval(1.0/60.0)
 

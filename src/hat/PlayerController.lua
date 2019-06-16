@@ -59,9 +59,9 @@ function PlayerController:onKeyReleased(keyCode, event)
         self.player:Right(false)
     end
 
-    if keyCode == cc.KeyCode.KEY_DPAD_LEFT then
+    if keyCode == cc.KeyCode.KEY_LEFT_ARROW then
         self.other:Left(false)
-    elseif keyCode == cc.KeyCode.KEY_DPAD_RIGHT then
+    elseif keyCode == cc.KeyCode.KEY_RIGHT_ARROW then
         self.other:Right(false)
     end
 end

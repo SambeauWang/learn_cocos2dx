@@ -59,6 +59,9 @@ function Hat:DestroyHat()
     self:removeFromParent(false)
 end
 
+function Hat:SlowDown()
+end
+
 function Hat:initContact()
     local contactListener = cc.EventListenerPhysicsContact:create()
     contactListener:registerScriptHandler(function(contact)

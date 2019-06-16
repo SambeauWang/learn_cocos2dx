@@ -40,9 +40,9 @@ Player1Pos = cc.p(100, 120)
 Player2Pos = cc.p(400, 120)
 
 -- 小假期
-ShortVacationLine = 50
+ShortVacationLine = 120
 -- 大假期
-VacationLine = 100
+VacationLine = 240
 
 -- dealine
 DeadLineSpeed = 15

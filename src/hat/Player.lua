@@ -1,12 +1,12 @@
-local Player = class("Player", function(layer, res)
+local Player = class("Player", function(layer, res, pos)
     return cc.Sprite:create(res)
 end)
 
-function Player.create(layer, res)
-    return Player.new(layer, res)
+function Player.create(layer, res, pos)
+    return Player.new(layer, res, pos)
 end
 
-function Player:ctor(layer)
+function Player:ctor(layer, res, pos)
     self.layer = layer
     self.isRunning = 0
     self.JumpCnt = 0
@@ -22,7 +22,7 @@ function Player:ctor(layer)
     self.PhysicsBody = cc.PhysicsBody:createBox(self:getContentSize(), PLAYER_MATERIAL)
     self:setPhysicsBody(self.PhysicsBody)
     self.PhysicsBody.Object = self
-    self:setPosition(cc.p(VisibleRect:center().x, VisibleRect:center().y - 130))
+    self:setPosition(pos)
     self:setAnchorPoint(cc.p(0.5, 0.5))
 
     self.PhysicsBody:setVelocity(cc.p(0, 150))
@@ -58,6 +58,19 @@ function Player:schedule(dt)
     if self.layer.uParent.DeadLine + self:getContentSize().height + 25 >= y then
         self.JumpCnt = 0
     end
+
+    -- if self.isOnGround then
+    --     print("test")
+    --     self.isOnGround = false
+    --     local curVelocity = self.PhysicsBody:getVelocity()
+    --     local dir = curVelocity.x > 0 and -1.0 or 1.0
+    --     local VelocityX = curVelocity.x + dir*AcceleratedSpeedX*dt
+    --     if VelocityX > 0.2 and VelocityX < -0.2 then
+    --         self.PhysicsBody:setVelocity(cc.p(VelocityX, curVelocity.y))
+    --     else
+    --         self.PhysicsBody:setVelocity(cc.p(0.0, curVelocity.y))
+    --     end
+    -- end
 end
 
 function Player:Shot()
@@ -86,6 +99,10 @@ end
 
 function Player:ClearStatus()
     self.JumpCnt = 0
+    self.isOnGround = true
+end
+
+function Player:SlowDown()
 end
 
 function Player:Right(Stop)
@@ -104,6 +121,23 @@ function Player:Jump()
         self.JumpCnt = self.JumpCnt + 1
         self.PhysicsBody:setVelocity(cc.p(curVelocity.x, InitSpeedY))
     end
+end
+
+function Player:createAction()
+    --///////////////动画开始//////////////////////
+    local animation = cc.Animation:create()
+    for i=1,4 do
+        local frameName = string.format("%d.png",i)
+        cclog("frameName = %s",frameName)
+        local spriteFrame = spriteFrame:getSpriteFrame(frameName)
+        animation:addSpriteFrame(spriteFrame)
+    end
+
+    animation:setDelayPerUnit(0.15)           --设置两个帧播放时间
+    animation:setRestoreOriginalFrame(true)    --动画执行后还原初始状态
+
+    local action = cc.Animate:create(animation)
+    sprite:runAction(cc.RepeatForever:create(action))
 end
 
 function Player:initContact()
