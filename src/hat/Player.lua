@@ -1,9 +1,9 @@
-local Player = class("Player", function(layer)
-    return cc.Sprite:create("grossini.png")
+local Player = class("Player", function(layer, res)
+    return cc.Sprite:create(res)
 end)
 
-function Player.create(layer)
-    return Player.new(layer)
+function Player.create(layer, res)
+    return Player.new(layer, res)
 end
 
 function Player:ctor(layer)
@@ -23,6 +23,7 @@ function Player:ctor(layer)
     self:setPhysicsBody(self.PhysicsBody)
     self.PhysicsBody.Object = self
     self:setPosition(cc.p(VisibleRect:center().x, VisibleRect:center().y - 130))
+    self:setAnchorPoint(cc.p(0.5, 0.5))
 
     self.PhysicsBody:setVelocity(cc.p(0, 150))
     self.PhysicsBody:setTag(PLAYER_TAG)
@@ -61,16 +62,18 @@ end
 
 function Player:Shot()
     local nHats = #self.hats
-    if nHats <= 0 then
+    if nHats <= 0 or self.isShoting then
         return
     end
+    self.isShoting = true
+
     local hat = self.hats[nHats]
     table.remove(self.hats, nHats)
     hat:retain()
     hat:removeFromParent(false)
-    print(nHats, hat, self.layer)
     self.layer:addChild(hat)
     hat:getPhysicsBody():setEnabled(true)
+    hat.isTestHatFlying = true
 
     local x, y = self:getPosition()
     local Size = self:getContentSize()

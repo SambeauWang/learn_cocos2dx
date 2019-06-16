@@ -1,5 +1,5 @@
 local Hat = class("Hat", function(layer)
-    return cc.Sprite:create("btn-play-selected.png")
+    return cc.Sprite:create("hat/icon/pot.png")
 end)
 
 function Hat.create(layer)
@@ -22,7 +22,7 @@ function Hat:ctor(layer)
     self.PhysicsBody:setCategoryBitmask(HAT_TAG)
     -- self.PhysicsBody:setContactTestBitmask(bit.bor(0xFFFFFFFF, -1))
     -- self.PhysicsBody:setContactTestBitmask(bit.bor(0xFFFFFFFF, -HAT_TAG))
-    self.PhysicsBody:setContactTestBitmask(PLAYER_TAG)
+    self.PhysicsBody:setContactTestBitmask(bit.bor(FLOOR_TAG, PLAYER_TAG))
     self.PhysicsBody:setCollisionBitmask(bit.bor(GROUND_TAG, FLOOR_TAG))
 
     -- 碰撞相关
@@ -36,6 +36,22 @@ function Hat:ctor(layer)
 end
 
 function Hat:ClearStatus()
+    if self.Owner and self.isTestHatFlying then
+        self.isTestHatFlying = false
+        self:runAction(
+            cc.CallFunc:create(function()
+                self:getPhysicsBody():setEnabled(false)
+                self:retain()
+                self:removeFromParent(false)
+
+                self.Owner:addChild(self)
+                local nHats = #self.Owner.hats + 1
+                self:setPosition(cc.p(PlayerWidth/2, PlayerHeight + 18*nHats))
+                table.insert(self.Owner.hats, self)
+                self.Owner.isShoting = false
+            end)
+        )
+    end
 end
 
 function Hat:initContact()
@@ -59,12 +75,41 @@ function Hat:schedule(dt)
             self:getPhysicsBody():setEnabled(false)
             self:retain()
             self:removeFromParent(false)
+            self:hit()
 
             v:addChild(self)
             local nHats = #v.hats + 1
-            self:setPosition(cc.p(PlayerWidth/2, PlayerHeight + 23*nHats))
+            self:setPosition(cc.p(PlayerWidth/2, PlayerHeight + 18*nHats))
             table.insert(v.hats, self)
+
+            self.Owner = v
+            break
         end
+    end
+end
+
+function Hat:hit()
+    local Cnt = 0
+    local CurIndex = math.random(0, 10)
+    while Cnt < 12 do
+        local Label = self.layer.TextLabel[CurIndex+1]
+        if not Label.isUsed then
+            Label.isUsed = true
+            local Size = Label:getContentSize()
+            local left = VisibleRect:left()
+            local right = VisibleRect:right()
+            Label:setPosition(cc.p(right.x + Size.width/2, right.y))
+            Label:runAction(cc.Sequence:create(
+                cc.MoveTo:create(3.0, cc.p(cc.p(left.x - Size.width/2, left.y))),
+                cc.CallFunc:create(function()
+                    Label.isUsed = false
+                end)
+            ))
+            return
+        end
+        Cnt = Cnt + 1
+        CurIndex = CurIndex + 1
+        CurIndex = CurIndex > 11 and CurIndex-12 or CurIndex
     end
 end
 
@@ -89,7 +134,6 @@ function Hat:onContactBegin(contact)
                 local Size = player:getContentSize()
                 local nHats = #player.hats + 1
                 hat:setPosition(cc.p(PlayerWidth/2, PlayerHeight + 10*nHats))
-                print(Size.width, Size.height, PlayerHeight + 10*nHats)
 
                 table.insert(player.hats, hat)
             end)

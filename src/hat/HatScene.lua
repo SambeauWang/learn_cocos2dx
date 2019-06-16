@@ -40,6 +40,15 @@ function HatScene:schedule(dt)
         self.DeadLine = VisibleRect:leftBottom().y + 50 + 15*(self.PastTime - 10)
         self.ground:setPositionY(self.DeadLine)
     end
+
+    -- if self.CurTimes > 12 then
+    --     self.GameOver = true
+    -- elseif self.PastTime > self.CurTimes * 5 then
+    --     self.CurTimes = self.CurTimes + 1
+    --     local hat = require("Hat/Hat").create(self.layer)
+    --     hat:setPosition(cc.p(HatPositions[self.CurTimes].x, HatPositions[self.CurTimes].y))
+    --     self.layer:addChild(hat)
+    -- end
 end
 
 function HatScene:createGround(leftBottom, RightTop)
@@ -52,23 +61,37 @@ function HatScene:createGround(leftBottom, RightTop)
     return ground
 end
 
+function HatScene:initTextList(layer)
+    layer.TextLabel = {}
+    for i=1, 11 do
+        local Label = cc.Sprite:create(string.format("hat/text/test%d.png", i))
+        Label:setPosition(cc.p(0, -30))
+        layer:addChild(Label)
+
+        table.insert(layer.TextLabel, Label)
+    end
+end
+
 function HatScene:createLayer()
     local layer = cc.Layer:create()
 
-    -- local ground = cc.Node:create()
-    -- local groudPhysicsBody = cc.PhysicsBody:createEdgeSegment(
-    --     cc.p(VisibleRect:leftBottom().x,VisibleRect:leftBottom().y + 50),
-    --     cc.p(VisibleRect:rightBottom().x,VisibleRect:rightBottom().y + 50)
-    -- )
-    -- ground:setPhysicsBody(groudPhysicsBody)
-    -- groudPhysicsBody:setCategoryBitmask(GROUND_TAG)
-    -- groudPhysicsBody:setContactTestBitmask(0xFFFFFFFF)
-    -- groudPhysicsBody:setCollisionBitmask(bit.bor(PLAYER_TAG, HAT_TAG))
+    local bg = cc.Sprite:create("hat/scene/bg.png")
+    bg:setPosition(VisibleRect:center())
+    bg:setLocalZOrder(-2)
+    layer:addChild(bg)
+
+    local Deadline1 = cc.Sprite:create("hat/scene/deadline.png")
+    Deadline1:setRotation(180)
+    Deadline1:setPosition(cc.p(VisibleRect:center().x, VisibleRect:top().y-50))
+    layer:addChild(Deadline1)
 
     self.ground = self:createGround(
         cc.p(VisibleRect:leftBottom().x,VisibleRect:leftBottom().y + 50),
         cc.p(VisibleRect:rightBottom().x,VisibleRect:rightBottom().y + 50)
     )
+    local Deadline2 = cc.Sprite:create("hat/scene/deadline.png")
+    Deadline2:setPosition(cc.p(VisibleRect:center().x, 30))
+    self.ground:addChild(Deadline2)
     layer:addChild(self.ground)
 
     local wall1 = self:createGround(
@@ -84,10 +107,10 @@ function HatScene:createLayer()
     layer:addChild(wall2)
 
     -- 创建角色
-    self.Player1 = require("Hat/Player").create(layer)
+    self.Player1 = require("Hat/Player").create(layer, "hat/player/1p.png")
     layer:addChild(self.Player1)
     self.Player1:setPosition(Player1Pos)
-    self.Player2 = require("Hat/Player").create(layer)
+    self.Player2 = require("Hat/Player").create(layer, "hat/player/2p.png")
     layer:addChild(self.Player2)
     self.Player2:setPosition(Player2Pos)
     self.players = {self.Player1, self.Player2}
@@ -125,11 +148,16 @@ function HatScene:createLayer()
     self.WinLabel = cc.Label:createWithTTF("", "fonts/arial.ttf", 32)
     layer:addChild(self.WinLabel, 1)
     self.WinLabel:setAnchorPoint(cc.p(0.5, 0.5))
-    self.WinLabel:setPosition(cc.p(VisibleRect:center().x, VisibleRect:top().y-90))
+    self.WinLabel:setPosition(cc.p(VisibleRect:center().x, VisibleRect:top().y-50))
+
+
+    -- 初始化滚动的文本
+    self:initTextList(layer)
 
     self.PastTime = 0
     self.GameOver = false
     self.DeadLine = VisibleRect:leftBottom().y + 50
+    self.CurTimes = 1
 
     layer:scheduleUpdateWithPriorityLua(function(dt)
         self:schedule(dt)
